@@ -3,6 +3,7 @@ import { Header } from "./components/Header";
 import { Home } from "./pages/Home";
 import { CircuitDetail } from "./pages/CircuitDetail";
 import { ExerciseDetail } from "./pages/ExerciseDetail";
+import { VideoLibraryPilot } from "./pages/VideoLibraryPilot";
 
 export function App() {
   return (
@@ -10,6 +11,7 @@ export function App() {
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/video-library" element={<VideoLibraryPilot />} />
         <Route path="/circuit/:circuitId" element={<CircuitDetail />} />
         <Route path="/circuit/:circuitId/exercise/:exerciseId" element={<ExerciseDetail />} />
       </Routes>

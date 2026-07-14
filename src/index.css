@@ -192,6 +192,51 @@ a {
   font-size: 14px;
 }
 
+.pilot-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 20px 24px 4px;
+  padding: 14px 16px;
+  background: #eef1ff;
+  border: 1px solid #c7d0ff;
+  border-radius: 10px;
+  color: var(--brand);
+  font-size: 15px;
+}
+
+.pilot-banner:hover {
+  background: #e4e9ff;
+}
+
+.clip-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 14px;
+}
+
+.clip-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.clip-card video {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  background: #000;
+  display: block;
+}
+
+.clip-name {
+  padding: 10px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
 .header .user-email {
   color: rgba(255, 255, 255, 0.9);
   font-size: 13px;

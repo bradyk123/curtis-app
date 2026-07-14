@@ -30,6 +30,11 @@ export function Home() {
         </div>
       </div>
 
+      <Link className="pilot-banner" to="/video-library">
+        <span>🎬 New: Sprint Drills <b>Video Library</b> (preview)</span>
+        <span className="chevron">&gt;</span>
+      </Link>
+
       {loading && categories.length === 0 && (
         <div className="empty-state">Loading…</div>
       )}
