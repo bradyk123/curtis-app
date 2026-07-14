@@ -1,10 +1,16 @@
 import { useState } from "react";
 import { useAuth } from "../lib/auth";
+import { useProfile } from "../lib/profile";
 import { AuthModal } from "./AuthModal";
+import { ProfileModal } from "./ProfileModal";
 
 export function Header() {
   const { user, signOut, loading } = useAuth();
+  const { profile } = useProfile();
   const [authMode, setAuthMode] = useState<"signin" | "signup" | null>(null);
+  const [showProfile, setShowProfile] = useState(false);
+
+  const name = profile?.display_name || user?.email || "";
 
   return (
     <header className="header">
@@ -12,9 +18,10 @@ export function Header() {
       <div className="actions">
         {loading ? null : user ? (
           <>
-            <span className="user-email" title={user.email}>
-              {user.email}
-            </span>
+            <button className="user-chip" onClick={() => setShowProfile(true)} title="Edit profile">
+              <span className="user-email">{name}</span>
+              {profile?.role && <span className={`role-badge role-${profile.role}`}>{profile.role}</span>}
+            </button>
             <button className="sign-in" onClick={() => signOut()}>
               Sign Out
             </button>
@@ -31,9 +38,8 @@ export function Header() {
         )}
       </div>
 
-      {authMode && (
-        <AuthModal initialMode={authMode} onClose={() => setAuthMode(null)} />
-      )}
+      {authMode && <AuthModal initialMode={authMode} onClose={() => setAuthMode(null)} />}
+      {showProfile && <ProfileModal onClose={() => setShowProfile(false)} />}
     </header>
   );
 }

@@ -237,13 +237,56 @@ a {
   color: var(--text);
 }
 
+.header .user-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.12);
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
 .header .user-email {
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(255, 255, 255, 0.95);
   font-size: 13px;
   max-width: 160px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.role-badge {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.role-badge.role-coach {
+  background: #fde68a;
+  color: #92400e;
+}
+
+.role-badge.role-athlete {
+  background: #bfdbfe;
+  color: #1e40af;
+}
+
+.auth-form select {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 15px;
+  outline: none;
+  background: white;
+}
+
+.auth-form select:focus {
+  border-color: var(--brand);
 }
 
 /* Auth modal */
