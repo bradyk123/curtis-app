@@ -31,7 +31,7 @@ export function Home() {
       </div>
 
       <Link className="pilot-banner" to="/video-library">
-        <span>🎬 New: Sprint Drills <b>Video Library</b> (preview)</span>
+        <span>🎬 <b>Video Library</b> — coaching clips by category</span>
         <span className="chevron">&gt;</span>
       </Link>
 
