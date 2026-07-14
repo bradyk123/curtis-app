@@ -1,12 +1,13 @@
 import { Link, useParams } from "react-router-dom";
-import { inventory } from "../data/inventory";
+import { useInventory } from "../data/useInventory";
 
 export function CircuitDetail() {
   const { circuitId } = useParams();
-  const circuit = inventory.flatMap((c) => c.circuits).find((c) => c.id === circuitId);
+  const { categories, loading } = useInventory();
+  const circuit = categories.flatMap((c) => c.circuits).find((c) => c.id === circuitId);
 
   if (!circuit) {
-    return <div className="empty-state">Circuit not found.</div>;
+    return <div className="empty-state">{loading ? "Loading…" : "Circuit not found."}</div>;
   }
 
   return (

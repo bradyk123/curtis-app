@@ -1,9 +1,10 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { inventory } from "../data/inventory";
+import { useInventory } from "../data/useInventory";
 
 export function Home() {
   const [query, setQuery] = useState("");
+  const { categories: inventory, loading } = useInventory();
 
   const categories = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -14,7 +15,7 @@ export function Home() {
         circuits: category.circuits.filter((circuit) => circuit.name.toLowerCase().includes(q)),
       }))
       .filter((category) => category.circuits.length > 0);
-  }, [query]);
+  }, [query, inventory]);
 
   return (
     <div>
@@ -28,6 +29,10 @@ export function Home() {
           />
         </div>
       </div>
+
+      {loading && categories.length === 0 && (
+        <div className="empty-state">Loading…</div>
+      )}
 
       {categories.map((category) => (
         <section className="category-section" key={category.id}>
