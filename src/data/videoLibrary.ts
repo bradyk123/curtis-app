@@ -147,6 +147,356 @@ export const videoLibrary: VideoClip[] = [
     "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/single-leg-b-skip.mp4"
   },
   {
+    "name": "180 Jumps",
+    "category": "Multiple Jump",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/180-jumps.mp4"
+  },
+  {
+    "name": "360 Jumps",
+    "category": "Multiple Jump",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/360-jumps.mp4"
+  },
+  {
+    "name": "360 Jumps 2",
+    "category": "Multiple Jump",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/360-jumps-2.mp4"
+  },
+  {
+    "name": "Alt Box Stepups",
+    "category": "Multiple Jump",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/alt-box-stepups.mp4"
+  },
+  {
+    "name": "Box Hurdle",
+    "category": "Multiple Jump",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/box-hurdle.mp4"
+  },
+  {
+    "name": "Box Hurdle 3",
+    "category": "Multiple Jump",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/box-hurdle-3.mp4"
+  },
+  {
+    "name": "Box Hurdle 4",
+    "category": "Multiple Jump",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/box-hurdle-4.mp4"
+  },
+  {
+    "name": "Box Jump",
+    "category": "Multiple Jump",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/box-jump.mp4"
+  },
+  {
+    "name": "Box Jump 2",
+    "category": "Multiple Jump",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/box-jump-2.mp4"
+  },
+  {
+    "name": "Box Jump 3",
+    "category": "Multiple Jump",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/box-jump-3.mp4"
+  },
+  {
+    "name": "Box Jump 4",
+    "category": "Multiple Jump",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/box-jump-4.mp4"
+  },
+  {
+    "name": "Box Step Ups",
+    "category": "Multiple Jump",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/box-step-ups.mp4"
+  },
+  {
+    "name": "Boxbox Jump",
+    "category": "Multiple Jump",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/boxbox-jump.mp4"
+  },
+  {
+    "name": "Boxboxhurdle",
+    "category": "Multiple Jump",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/boxboxhurdle.mp4"
+  },
+  {
+    "name": "Boxboxjump",
+    "category": "Multiple Jump",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/boxboxjump.mp4"
+  },
+  {
+    "name": "Bx Hurdle 5",
+    "category": "Multiple Jump",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/bx-hurdle-5.mp4"
+  },
+  {
+    "name": "Bxbxjmp",
+    "category": "Multiple Jump",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/bxbxjmp.mp4"
+  },
+  {
+    "name": "Bxbxjump",
+    "category": "Multiple Jump",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/bxbxjump.mp4"
+  },
+  {
+    "name": "Bxhrdle",
+    "category": "Multiple Jump",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/bxhrdle.mp4"
+  },
+  {
+    "name": "Dlb Lateral Hops",
+    "category": "Multiple Jump",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/dlb-lateral-hops.mp4"
+  },
+  {
+    "name": "Line Hops",
+    "category": "Multiple Jump",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/line-hops.mp4"
+  },
+  {
+    "name": "Line Hops 2",
+    "category": "Multiple Jump",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/line-hops-2.mp4"
+  },
+  {
+    "name": "Lunge Hops",
+    "category": "Multiple Jump",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/lunge-hops.mp4"
+  },
+  {
+    "name": "Pogo 2",
+    "category": "Multiple Jump",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/pogo-2.mp4"
+  },
+  {
+    "name": "Pogo Jumps",
+    "category": "Multiple Jump",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/pogo-jumps.mp4"
+  },
+  {
+    "name": "Sl Butt Kicks",
+    "category": "Multiple Jump",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/sl-butt-kicks.mp4"
+  },
+  {
+    "name": "Spd Skaters Dbl Hops Pogo",
+    "category": "Multiple Jump",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/spd-skaters-dbl-hops-pogo.mp4"
+  },
+  {
+    "name": "Speed Skaters",
+    "category": "Multiple Jump",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/speed-skaters.mp4"
+  },
+  {
+    "name": "Star Jumps",
+    "category": "Multiple Jump",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/star-jumps.mp4"
+  },
+  {
+    "name": "Tuck Jumps",
+    "category": "Multiple Jump",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/tuck-jumps.mp4"
+  },
+  {
+    "name": "Tuck Jumps 2",
+    "category": "Multiple Jump",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/tuck-jumps-2.mp4"
+  },
+  {
+    "name": "Blf Mb",
+    "category": "Multiple Throw",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/blf-mb.mp4"
+  },
+  {
+    "name": "Chstp Mbgm",
+    "category": "Multiple Throw",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/chstp-mbgm.mp4"
+  },
+  {
+    "name": "Hammer Hip C T",
+    "category": "Multiple Throw",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/hammer-hip-c-t.mp4"
+  },
+  {
+    "name": "Hammer Hip Evan",
+    "category": "Multiple Throw",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/hammer-hip-evan.mp4"
+  },
+  {
+    "name": "Hammer Hip L",
+    "category": "Multiple Throw",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/hammer-hip-l.mp4"
+  },
+  {
+    "name": "Hammer Hip R",
+    "category": "Multiple Throw",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/hammer-hip-r.mp4"
+  },
+  {
+    "name": "Hip Catch Toss",
+    "category": "Multiple Throw",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/hip-catch-toss.mp4"
+  },
+  {
+    "name": "Hurdle Reach",
+    "category": "Multiple Throw",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/hurdle-reach.mp4"
+  },
+  {
+    "name": "Hurdle Reach Jacky",
+    "category": "Multiple Throw",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/hurdle-reach-jacky.mp4"
+  },
+  {
+    "name": "Hurdle Reach Jacky 2",
+    "category": "Multiple Throw",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/hurdle-reach-jacky-2.mp4"
+  },
+  {
+    "name": "Kneeling Chest Pass",
+    "category": "Multiple Throw",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/kneeling-chest-pass.mp4"
+  },
+  {
+    "name": "Lateral Hip C T",
+    "category": "Multiple Throw",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/lateral-hip-c-t.mp4"
+  },
+  {
+    "name": "Lateral Hip C T2",
+    "category": "Multiple Throw",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/lateral-hip-c-t2.mp4"
+  },
+  {
+    "name": "Lateral Shoulder C T",
+    "category": "Multiple Throw",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/lateral-shoulder-c-t.mp4"
+  },
+  {
+    "name": "Mb Between Leg Fwd",
+    "category": "Multiple Throw",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/mb-between-leg-fwd.mp4"
+  },
+  {
+    "name": "Mb Btwn Leg Fwd",
+    "category": "Multiple Throw",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/mb-btwn-leg-fwd.mp4"
+  },
+  {
+    "name": "Mb Good Morning",
+    "category": "Multiple Throw",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/mb-good-morning.mp4"
+  },
+  {
+    "name": "Mb Good Mornings",
+    "category": "Multiple Throw",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/mb-good-mornings.mp4"
+  },
+  {
+    "name": "Mb Rotations Solo Jacky",
+    "category": "Multiple Throw",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/mb-rotations-solo-jacky.mp4"
+  },
+  {
+    "name": "Mbvups",
+    "category": "Multiple Throw",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/mbvups.mp4"
+  },
+  {
+    "name": "Muscle Ups",
+    "category": "Multiple Throw",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/muscle-ups.mp4"
+  },
+  {
+    "name": "Ohf Hammerhip",
+    "category": "Multiple Throw",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/ohf-hammerhip.mp4"
+  },
+  {
+    "name": "Ohf Maddy Mark",
+    "category": "Multiple Throw",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/ohf-maddy-mark.mp4"
+  },
+  {
+    "name": "Overhead Back Evan",
+    "category": "Multiple Throw",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/overhead-back-evan.mp4"
+  },
+  {
+    "name": "Overhead Back Flat",
+    "category": "Multiple Throw",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/overhead-back-flat.mp4"
+  },
+  {
+    "name": "Overhead Back Shot",
+    "category": "Multiple Throw",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/overhead-back-shot.mp4"
+  },
+  {
+    "name": "Overheadfwd Hiptoss Reachandhike",
+    "category": "Multiple Throw",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/overheadfwd-hiptoss-reachandhike.mp4"
+  },
+  {
+    "name": "Prone Catch Toss",
+    "category": "Multiple Throw",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/prone-catch-toss.mp4"
+  },
+  {
+    "name": "Prone Ct Prone Ohb",
+    "category": "Multiple Throw",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/prone-ct-prone-ohb.mp4"
+  },
+  {
+    "name": "Sit Up Toss",
+    "category": "Multiple Throw",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/sit-up-toss.mp4"
+  },
+  {
+    "name": "Soccersweeps Mb Leg Toss",
+    "category": "Multiple Throw",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/soccersweeps-mb-leg-toss.mp4"
+  },
+  {
+    "name": "Standing Chest C T",
+    "category": "Multiple Throw",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/standing-chest-c-t.mp4"
+  },
+  {
+    "name": "Standing Hip C T",
+    "category": "Multiple Throw",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/standing-hip-c-t.mp4"
+  },
+  {
+    "name": "Standing Oh Forward",
+    "category": "Multiple Throw",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/standing-oh-forward.mp4"
+  },
+  {
+    "name": "Standing Oh Fwd",
+    "category": "Multiple Throw",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/standing-oh-fwd.mp4"
+  },
+  {
+    "name": "Tank",
+    "category": "Multiple Throw",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/tank.mp4"
+  },
+  {
+    "name": "Torso Circles",
+    "category": "Multiple Throw",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/torso-circles.mp4"
+  },
+  {
+    "name": "Torsocircles2",
+    "category": "Multiple Throw",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/torsocircles2.mp4"
+  },
+  {
+    "name": "V Ups Jacky",
+    "category": "Multiple Throw",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/v-ups-jacky.mp4"
+  },
+  {
     "name": "Bubkas",
     "category": "Ancillary Strength",
     "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/bubkas.mp4"
@@ -217,6 +567,46 @@ export const videoLibrary: VideoClip[] = [
     "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/russian-twists-oh.mp4"
   },
   {
+    "name": "Russian Twists Seated Slr",
+    "category": "Ancillary Strength",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/russian-twists-seated-slr.mp4"
+  },
+  {
+    "name": "Russian Twists Standing",
+    "category": "Ancillary Strength",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/russian-twists-standing.mp4"
+  },
+  {
+    "name": "Seated Bnp",
+    "category": "Ancillary Strength",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/seated-bnp.mp4"
+  },
+  {
+    "name": "Ss Hamstring Curl",
+    "category": "Ancillary Strength",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/ss-hamstring-curl.mp4"
+  },
+  {
+    "name": "Standing Lateral Flys",
+    "category": "Ancillary Strength",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/standing-lateral-flys.mp4"
+  },
+  {
+    "name": "Supine Flys",
+    "category": "Ancillary Strength",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/supine-flys.mp4"
+  },
+  {
+    "name": "Toe Risers",
+    "category": "Ancillary Strength",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/toe-risers.mp4"
+  },
+  {
+    "name": "Wipers",
+    "category": "Ancillary Strength",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/wipers.mp4"
+  },
+  {
     "name": "Bike",
     "category": "Ancillary Bike",
     "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/bike.mp4"
@@ -230,5 +620,30 @@ export const videoLibrary: VideoClip[] = [
     "name": "Img 3195",
     "category": "Ancillary Bike",
     "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/img-3195.mp4"
+  },
+  {
+    "name": "Bicycle",
+    "category": "Mobility",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/bicycle.mp4"
+  },
+  {
+    "name": "Carioka Walking",
+    "category": "Mobility",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/carioka-walking.mp4"
+  },
+  {
+    "name": "Crossovers",
+    "category": "Mobility",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/crossovers.mp4"
+  },
+  {
+    "name": "Erinphotobomb",
+    "category": "Other",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/erinphotobomb.mp4"
+  },
+  {
+    "name": "Maddy Gym Entrance",
+    "category": "Other",
+    "videoUrl": "https://ujcysyepogzmglnxrvln.supabase.co/storage/v1/object/public/exercise-video/maddy-gym-entrance.mp4"
   }
 ];
