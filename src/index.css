@@ -276,6 +276,76 @@ a {
   color: #1e40af;
 }
 
+.header .admin-link {
+  color: white;
+  font-size: 13px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.approve-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+
+.approve-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.approve-name {
+  font-weight: 600;
+  font-size: 15px;
+  margin-bottom: 4px;
+}
+
+.approve-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.approve-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.approve-btn,
+.reject-btn {
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.approve-btn {
+  background: var(--brand);
+  color: white;
+}
+
+.reject-btn {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.approve-btn:disabled,
+.reject-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
 .auth-form select {
   border: 1px solid var(--border);
   border-radius: 8px;
