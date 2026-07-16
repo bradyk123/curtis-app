@@ -1,0 +1,64 @@
+# Beach Track Club — Handoff
+
+Paste this into a new Claude Code chat, or say "read HANDOFF.md". Everything here is current as of the last session.
+
+## ▶ Start here (next session)
+Do these roughly in order — but ask Brady which he wants first:
+1. **Finish Cloudflare Pages** — Brady connects the repo in the Cloudflare dashboard (steps under "Open items"). Once it deploys, load the `*.pages.dev` URL, verify sign-in + video library work, and confirm auto-deploy by pushing a tiny change.
+2. **Then feature work — the Scheduling tab** is the natural next build now that accounts + roles exist (coach creates sessions, athletes view/RSVP). Design the `sessions` table + RLS (coach writes, athletes read), add the tab + admin-gated create form.
+3. **Housekeeping when convenient:** rotate the Supabase `service_role` key + admin password (were exposed in chat); delete the `demo@` and `athlete1@` test accounts; tidy the raw video clip names.
+
+Keep sessions lean: don't re-read the big spreadsheets or re-process video unless a task needs it. Supabase changes are live instantly (no deploy); only code changes deploy.
+
+## What this is
+A track & field training web app for a coach (Curtis). Being built by Brady (owner: `team@beachtrackclub.com`). Goal: prove it out on the web now, wrap with Capacitor for the App Store later.
+
+- **Repo:** https://github.com/bradyk123/curtis-app (branch `main`)
+- **Live (GitHub Pages):** https://bradyk123.github.io/curtis-app/
+- **Live (Cloudflare Pages):** being connected — will be a `*.pages.dev` URL (auto-deploys on git push)
+- **Stack:** React + TypeScript + Vite, React Router (HashRouter), Supabase backend
+
+## Dev environment (important)
+- **`npm`/`node` are NOT on the default PATH.** Prefix commands with:
+  `export PATH="/Users/bradykirtland/.nvm/versions/node/v24.18.0/bin:$PATH"`
+- Build: `npm run build` · Deploy to GitHub Pages: `npm run deploy` (gh-pages) · Cloudflare auto-deploys on `git push` once connected.
+- Vite `base` auto-switches: `/` on Cloudflare (`CF_PAGES` env), `/curtis-app/` on GitHub Pages.
+- `.env` (gitignored) holds `SUPABASE_SERVICE_ROLE_KEY` (server-side scripts only). `.env.production` (committed) holds the **public** `VITE_SUPABASE_URL` + `VITE_SUPABASE_ANON_KEY` (safe — anon key is publishable; data protected by RLS).
+
+## Supabase
+- Project "Beach Track Club App", ref `ujcysyepogzmglnxrvln`, URL `https://ujcysyepogzmglnxrvln.supabase.co`, Free plan, owner `team@beachtrackclub.com`.
+- **Tables:** `categories`/`circuits`/`exercises` (inventory), `profiles` (users), storage buckets `exercise-media` (GIFs, public) + `exercise-video` (MP4s, public).
+- **Running SQL for the owner:** use Claude-in-Chrome on his logged-in beachtrackclub Supabase → go to `/sql/new` → set the Monaco editor via `window.monaco.editor.getModels()[0].setValue(sql)` (javascript_tool may say "[BLOCKED]" but it still executes) → click **Run** → confirm the "destructive operations" dialog for DDL. No DB password needed. Schema files live in `supabase/*.sql`.
+- **Runtime, not build-time:** the app reads Supabase live in the browser, so data/schema changes appear instantly on every deployed version — no redeploy needed. Only *code* changes need a deploy.
+
+## What's built and LIVE
+1. **Auth gate** — whole app is behind login (`src/pages/AuthPage.tsx`, gate in `src/App.tsx`). Email confirmation is OFF.
+2. **Approval flow** — signup → `pending` (`src/pages/PendingScreen.tsx`, collects name/role/school/class_year/events) → admin approves in-app at `/admin` (`src/pages/AdminPanel.tsx`, "Approvals" header link, admins only). A `guard_profile_update` trigger stops logged-in non-admins from self-approving (but allows server-side/SQL setup).
+3. **Profiles & roles** — `src/lib/profile.ts`; role athlete/coach, `is_admin`, school/class_year/events.
+4. **Training inventory** — 12 categories / 43 circuits / 262 exercises with GIFs. Data in generated `src/data/inventory.ts` (regen: `scripts/gen_inventory.py` from `~/Desktop/Track & Field App - Sheets.xlsx`, Circuits+Items sheets). Fetched live via `src/data/useInventory.ts` (falls back to bundled static data).
+5. **Video library** — 129 clips across 7 categories, web MP4 in `exercise-video` bucket, at `/video-library` (`src/pages/VideoLibrary.tsx`, on-screen autoplay grid). Data in generated `src/data/videoLibrary.ts`.
+
+## Accounts (passwords held by Brady — not in this doc)
+- **Admin:** `team@beachtrackclub.com` (is_admin, coach) — sees Approvals.
+- **Demo athlete:** `athlete@beachtrackclub.com` (approved).
+- `demo@beachtrackclub.com` is also admin; `athlete1@beachtrackclub.com` is a leftover test account — both deletable.
+
+## Key scripts
+- `scripts/gen_inventory.py` — build inventory.ts from the xlsx.
+- `scripts/gen_video_library.mjs` — build videoLibrary.ts from processed clips.
+- `scripts/full_batch.mjs` — video pipeline: download from Google Drive → convert MOV→MP4 (`ffmpeg-static` npm) → upload to Supabase. Idempotent/resumable.
+- `scripts/seed_supabase.mjs` — seed inventory tables + upload GIFs.
+- Video source: Google Drive "Vids" folder (shared link), organized by category. New taxonomy source: "Training Item Index" Google Sheet.
+
+## Open items / next steps
+- **Finish Cloudflare Pages connect** (owner does the dashboard OAuth: dash.cloudflare.com → Workers & Pages → Create → Pages → Connect to Git → repo `bradyk123/curtis-app`, build `npm run build`, output `dist`), then verify the live site + auto-deploy.
+- **Security:** rotate the Supabase `service_role` key and the admin password (both were pasted in chat during setup).
+- **Cleanup:** retire `demo@` and `athlete1@` test accounts.
+- **Content:** video clip names come from raw Drive filenames (some like "Img 3195") — tidy them / map to the sheet's Semantic Name + Variant taxonomy. Coaching cues are largely missing from the source data.
+- **Bigger:** the new video library currently coexists with the old GIF/circuit inventory; the deeper project is merging them into one Category → Semantic Name → Variant model.
+- **Future features:** Scheduling tab, Payments/subscriptions, College-recruiting search (the full "Beach" app vision).
+- **App Store:** wrap with Capacitor (iOS+Android); owner must create Apple ($99/yr) + Google Play ($25) dev accounts; add in-app account deletion (Apple requirement); if social login is added, must add "Sign in with Apple".
+
+## Gotchas
+- Routes use HashRouter (`/#/...`). Supabase Storage buckets are public (media URLs work for anyone) — UI is gated but media isn't cryptographically private (a future "lock down data" step could tighten RLS + use signed URLs).
+- Free-tier limits: 1 GB storage, ~5 GB egress/month. ~$25/mo Supabase Pro when it grows. Video bandwidth is the main cost lever; switching the library to tap-to-play (from autoplay) would cut it ~5–10× if needed.
