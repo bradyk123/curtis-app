@@ -18,3 +18,19 @@ export async function persistOrder(table: InvTable, orderedIds: number[]) {
   const results = await Promise.all(orderedIds.map((id, i) => updateInvRow(table, id, { sort_order: i })));
   return { error: results.find((r) => r.error)?.error };
 }
+
+/**
+ * Uploads a new exercise GIF/image to the exercise-media bucket. Returns the
+ * stored filename (to save as exercises.media_path). Uses a unique name so the
+ * CDN serves the new image immediately (no stale cache).
+ */
+export async function uploadExerciseMedia(file: File, slug: string): Promise<{ path?: string; error?: string }> {
+  if (!supabase) return { error: "Not connected to Supabase." };
+  const ext = (file.name.match(/\.[^.]+$/)?.[0] || ".gif").toLowerCase();
+  const path = `${slug}-${Date.now().toString(36)}${ext}`;
+  const up = await supabase.storage
+    .from("exercise-media")
+    .upload(path, file, { contentType: file.type || "image/gif", upsert: false });
+  if (up.error) return { error: up.error.message };
+  return { path };
+}

@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useInventory } from "../data/useInventory";
 import { useProfile } from "../lib/profile";
-import { updateInvRow, persistOrder } from "../data/inventoryAdmin";
+import { updateInvRow, persistOrder, uploadExerciseMedia } from "../data/inventoryAdmin";
 import type { Exercise } from "../types";
 
 export function CircuitDetail() {
@@ -12,6 +12,9 @@ export function CircuitDetail() {
   const isAdmin = !!profile?.is_admin;
   const [edit, setEdit] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
+  const [uploadingId, setUploadingId] = useState<number | null>(null);
+  const fileInput = useRef<HTMLInputElement>(null);
+  const mediaTarget = useRef<Exercise | null>(null);
 
   const circuit = categories.flatMap((c) => c.circuits).find((c) => c.id === circuitId);
 
@@ -34,6 +37,28 @@ export function CircuitDetail() {
     const ids = exercises.map((e) => e.dbId!);
     [ids[index], ids[j]] = [ids[j], ids[index]];
     fail((await persistOrder("exercises", ids)).error);
+    reload();
+  };
+
+  const pickMedia = (ex: Exercise) => {
+    mediaTarget.current = ex;
+    fileInput.current?.click();
+  };
+  const onMediaChosen = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    const ex = mediaTarget.current;
+    if (!file || !ex) return;
+    setUploadingId(ex.dbId!);
+    setMsg(null);
+    const { path, error } = await uploadExerciseMedia(file, ex.id);
+    if (error || !path) {
+      setUploadingId(null);
+      setMsg(`GIF upload failed: ${error ?? "unknown error"}`);
+      return;
+    }
+    fail((await updateInvRow("exercises", ex.dbId!, { media_path: path })).error);
+    setUploadingId(null);
     reload();
   };
 
@@ -67,10 +92,15 @@ export function CircuitDetail() {
                   className={`list-row editing-row${exercise.hidden ? " row-hidden" : ""}`}
                   key={exercise.id}
                 >
-                  <span
-                    className="thumb"
+                  <button
+                    className="thumb thumb-edit"
                     style={exercise.mediaUrl ? { backgroundImage: `url(${exercise.mediaUrl})` } : undefined}
-                  />
+                    onClick={() => pickMedia(exercise)}
+                    title="Change GIF"
+                    disabled={uploadingId === exercise.dbId}
+                  >
+                    <span className="thumb-overlay">{uploadingId === exercise.dbId ? "…" : "✎"}</span>
+                  </button>
                   <input
                     className="edit-row-input"
                     defaultValue={exercise.name}
@@ -82,6 +112,9 @@ export function CircuitDetail() {
                   <div className="row-actions">
                     <button className="icon-btn" disabled={i === 0} onClick={() => move(i, -1)}>↑</button>
                     <button className="icon-btn" disabled={i === exercises.length - 1} onClick={() => move(i, 1)}>↓</button>
+                    <button className="text-btn" disabled={uploadingId === exercise.dbId} onClick={() => pickMedia(exercise)}>
+                      {uploadingId === exercise.dbId ? "Uploading…" : "GIF"}
+                    </button>
                     <button className="text-btn" onClick={() => hide(exercise)}>
                       {exercise.hidden ? "Show" : "Hide"}
                     </button>
@@ -105,6 +138,14 @@ export function CircuitDetail() {
           </div>
         )}
       </div>
+
+      <input
+        ref={fileInput}
+        type="file"
+        accept="image/gif,image/webp,image/png,image/jpeg,image/*"
+        style={{ display: "none" }}
+        onChange={onMediaChosen}
+      />
     </div>
   );
 }
