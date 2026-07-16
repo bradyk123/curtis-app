@@ -10,3 +10,6 @@ export const supabase = supabaseConfigured ? createClient(url!, anonKey!) : null
 
 /** Public base URL for the exercise-media storage bucket. */
 export const mediaBaseUrl = url ? `${url}/storage/v1/object/public/exercise-media/` : "";
+
+/** Public base URL for the exercise-video storage bucket (video library clips). */
+export const videoBaseUrl = url ? `${url}/storage/v1/object/public/exercise-video/` : "";

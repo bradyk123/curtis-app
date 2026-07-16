@@ -222,12 +222,31 @@ a {
   overflow: hidden;
 }
 
+.clip-media {
+  position: relative;
+}
+
 .clip-card video {
   width: 100%;
   aspect-ratio: 16 / 9;
   object-fit: cover;
   background: #000;
   display: block;
+}
+
+.clip-duration {
+  position: absolute;
+  bottom: 6px;
+  right: 6px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.72);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.3;
+  pointer-events: none;
 }
 
 .clip-name {
