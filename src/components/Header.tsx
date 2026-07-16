@@ -4,6 +4,7 @@ import { useAuth } from "../lib/auth";
 import { useProfile } from "../lib/profile";
 import { AuthModal } from "./AuthModal";
 import { ProfileModal } from "./ProfileModal";
+import { Logo } from "./Logo";
 
 export function Header() {
   const { user, signOut, loading } = useAuth();
@@ -15,7 +16,10 @@ export function Header() {
 
   return (
     <header className="header">
-      <h1>Beach Track Club</h1>
+      <Link className="brand-lockup" to="/">
+        <Logo size={30} className="logo" />
+        <h1>Beach Track Club</h1>
+      </Link>
       <div className="actions">
         {loading ? null : user ? (
           <>

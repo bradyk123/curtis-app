@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from "react";
 import { useAuth } from "../lib/auth";
+import { Logo } from "../components/Logo";
 
 type Mode = "signin" | "signup";
 
@@ -35,7 +36,9 @@ export function AuthPage() {
     <div className="auth-page">
       <div className="auth-page-card">
         <div className="auth-brand">
-          <div className="auth-logo">🏖️</div>
+          <div className="auth-logo">
+            <Logo size={38} />
+          </div>
           <h1>Beach Track Club</h1>
           <p>Sign in to access your training.</p>
         </div>
