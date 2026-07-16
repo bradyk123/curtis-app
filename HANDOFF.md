@@ -13,8 +13,8 @@ Keep sessions lean: don't re-read the big spreadsheets or re-process video unles
 ## What this is
 A track & field training web app for a coach (Curtis). Being built by Brady (owner: `team@beachtrackclub.com`). Goal: prove it out on the web now, wrap with Capacitor for the App Store later.
 
-- **Repo:** https://github.com/bradyk123/curtis-app (branch `main`)
-- **Live (GitHub Pages):** https://bradyk123.github.io/curtis-app/
+- **Repo:** https://github.com/beachtrackclub/curtis-app (branch `main`). Transferred from `bradyk123` on 2026-07-16; old `bradyk123/curtis-app` links redirect.
+- **Live (GitHub Pages):** https://beachtrackclub.github.io/curtis-app/ (being retired in favor of Cloudflare Pages)
 - **Live (Cloudflare Pages):** being connected — will be a `*.pages.dev` URL (auto-deploys on git push)
 - **Stack:** React + TypeScript + Vite, React Router (HashRouter), Supabase backend
 
@@ -51,7 +51,7 @@ A track & field training web app for a coach (Curtis). Being built by Brady (own
 - Video source: Google Drive "Vids" folder (shared link), organized by category. New taxonomy source: "Training Item Index" Google Sheet.
 
 ## Open items / next steps
-- **Finish Cloudflare Pages connect** (owner does the dashboard OAuth: dash.cloudflare.com → Workers & Pages → Create → Pages → Connect to Git → repo `bradyk123/curtis-app`, build `npm run build`, output `dist`), then verify the live site + auto-deploy.
+- **Finish Cloudflare Pages connect** (owner does the dashboard OAuth: dash.cloudflare.com → Workers & Pages → Create → Pages → Connect to Git → repo `beachtrackclub/curtis-app`, build `npm run build`, output `dist`), then verify the live site + auto-deploy.
 - **Security:** rotate the Supabase `service_role` key and the admin password (both were pasted in chat during setup).
 - **Cleanup:** retire `demo@` and `athlete1@` test accounts.
 - **Content:** video clip names come from raw Drive filenames (some like "Img 3195") — tidy them / map to the sheet's Semantic Name + Variant taxonomy. Coaching cues are largely missing from the source data.
