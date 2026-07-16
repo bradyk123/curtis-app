@@ -5,8 +5,9 @@ Paste this into a new Claude Code chat, or say "read HANDOFF.md". Everything her
 ## ▶ Start here (next session)
 Do these roughly in order — but ask Brady which he wants first:
 1. **Cloudflare Pages — DONE (2026-07-16).** Live at https://curtis-app.pages.dev, auto-deploys from `main` on git push (verified). Build `npm run build`, output `dist`. Owner is the `team@beachtrackclub.com` Cloudflare account (signed in via GitHub). Still to verify: sign-in + video library on the live site (needs Brady's password — the auth page renders and Supabase config loads fine).
-2. **Then feature work — the Scheduling tab** is the natural next build now that accounts + roles exist (coach creates sessions, athletes view/RSVP). Design the `sessions` table + RLS (coach writes, athletes read), add the tab + admin-gated create form.
-3. **Housekeeping when convenient:** rotate the Supabase `service_role` key + admin password (were exposed in chat); delete the `demo@` and `athlete1@` test accounts; tidy the raw video clip names.
+2. **Video editor — Phases 1 & 2 DONE (2026-07-16).** Video library now lives in a Supabase `videos` table (was compiled-in). App reads it live; admins get an in-app Edit toggle on the Video Library page: rename, recategorize, duration label, reorder (up/down), hide/show, delete, and upload new MP4s. Files: `supabase/videos.sql` + `videos_seed.sql` + `videos_storage.sql` (all applied), `src/data/useVideos.ts`, `src/data/videoAdmin.ts`, `src/pages/VideoLibrary.tsx`. **Phase 3 (remaining):** merge video ↔ training inventory — attach a clip to an exercise (the `videos.exercise_id` column already exists) and show it on exercise/circuit detail.
+3. **Then the Scheduling tab** (coach creates sessions, athletes view/RSVP). Design the `sessions` table + RLS (coach writes, athletes read), add the tab + admin-gated create form.
+4. **Housekeeping when convenient:** rotate the Supabase `service_role` key + admin password (were exposed in chat); delete the `demo@` and `athlete1@` test accounts; tidy the raw video clip names (now editable in-app via the video editor).
 
 Keep sessions lean: don't re-read the big spreadsheets or re-process video unless a task needs it. Supabase changes are live instantly (no deploy); only code changes deploy.
 
@@ -36,7 +37,7 @@ A track & field training web app for a coach (Curtis). Being built by Brady (own
 2. **Approval flow** — signup → `pending` (`src/pages/PendingScreen.tsx`, collects name/role/school/class_year/events) → admin approves in-app at `/admin` (`src/pages/AdminPanel.tsx`, "Approvals" header link, admins only). A `guard_profile_update` trigger stops logged-in non-admins from self-approving (but allows server-side/SQL setup).
 3. **Profiles & roles** — `src/lib/profile.ts`; role athlete/coach, `is_admin`, school/class_year/events.
 4. **Training inventory** — 12 categories / 43 circuits / 262 exercises with GIFs. Data in generated `src/data/inventory.ts` (regen: `scripts/gen_inventory.py` from `~/Desktop/Track & Field App - Sheets.xlsx`, Circuits+Items sheets). Fetched live via `src/data/useInventory.ts` (falls back to bundled static data).
-5. **Video library** — 129 clips across 7 categories, web MP4 in `exercise-video` bucket, at `/video-library` (`src/pages/VideoLibrary.tsx`, on-screen autoplay grid). Data in generated `src/data/videoLibrary.ts`.
+5. **Video library** — 129 clips across 7 categories, web MP4 in `exercise-video` bucket, at `/video-library` (`src/pages/VideoLibrary.tsx`, on-screen autoplay grid). **Now DB-backed** (Supabase `videos` table via `src/data/useVideos.ts`), with an **admin edit mode** (rename/recategorize/reorder/duration/hide/delete/upload — `src/data/videoAdmin.ts`). Bundled `src/data/videoLibrary.ts` remains the offline fallback + the source for the one-time seed.
 
 ## Accounts (passwords held by Brady — not in this doc)
 - **Admin:** `team@beachtrackclub.com` (is_admin, coach) — sees Approvals.
