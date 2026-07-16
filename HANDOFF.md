@@ -39,6 +39,9 @@ A track & field training web app for a coach (Curtis). Being built by Brady (own
 4. **Training inventory** — 12 categories / 43 circuits / 262 exercises with GIFs. Data in generated `src/data/inventory.ts` (regen: `scripts/gen_inventory.py` from `~/Desktop/Track & Field App - Sheets.xlsx`, Circuits+Items sheets). Fetched live via `src/data/useInventory.ts` (falls back to bundled static data).
 5. **Video library** — 129 clips across 7 categories, web MP4 in `exercise-video` bucket, at `/video-library` (`src/pages/VideoLibrary.tsx`, on-screen autoplay grid). **Now DB-backed** (Supabase `videos` table via `src/data/useVideos.ts`), with an **admin edit mode** (rename/recategorize/reorder/duration/hide/delete/upload — `src/data/videoAdmin.ts`). Bundled `src/data/videoLibrary.ts` remains the offline fallback + the source for the one-time seed.
 
+## Branding (applied 2026-07-16)
+Dark **Beach Performance / Trackside** identity from the "Brand - Beach Performance" Drive folder: colors **Black / Charcoal / White / Gold** (`--gold: #e9b63c`), double-chevron logo (`src/components/Logo.tsx`, SVG, `currentColor`), favicon `public/favicon.svg`. Type spec calls for **Proxima Nova Condensed Black** (headings) / **Proxima Nova or Roboto** (body); Proxima Nova isn't free, so headings use **Barlow Condensed** and body uses **Roboto** (the brand's approved fallback) via Google Fonts in `index.html`. All theme tokens live in `src/index.css` `:root`. To fine-tune the gold or swap in licensed Proxima Nova, edit those two files. Exact PNG logo can replace the SVG if pixel-perfect fidelity is wanted.
+
 ## Accounts (passwords held by Brady — not in this doc)
 - **Admin:** `team@beachtrackclub.com` (is_admin, coach) — sees Approvals.
 - **Demo athlete:** `athlete@beachtrackclub.com` (approved).
