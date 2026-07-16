@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { Category } from "../types";
 import { inventory as staticInventory } from "./inventory";
 import { supabase, supabaseConfigured, mediaBaseUrl } from "../lib/supabase";
@@ -18,55 +18,63 @@ export function useInventory() {
   const [loading, setLoading] = useState(supabaseConfigured);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (!supabaseConfigured || !supabase) return;
-    let active = true;
-
-    (async () => {
-      const { data, error } = await supabase
-        .from("categories")
-        .select(
-          "slug, name, sort_order, circuits ( slug, name, subtitle, sort_order, exercises ( slug, name, media_path, cues, sort_order ) )"
-        )
-        .order("sort_order");
-
-      if (!active) return;
-
-      if (error || !data) {
-        // fall back to bundled data so the app still works offline / on error
-        setError(error?.message ?? "Failed to load inventory");
-        setCategories(staticInventory);
-        setLoading(false);
-        return;
-      }
-
-      const bySort = (a: { sort_order: number }, b: { sort_order: number }) =>
-        a.sort_order - b.sort_order;
-
-      const mapped: Category[] = (data as any[]).map((c) => ({
-        id: c.slug,
-        name: c.name,
-        circuits: [...(c.circuits ?? [])].sort(bySort).map((ci: any) => ({
-          id: ci.slug,
-          name: ci.name,
-          subtitle: ci.subtitle ?? undefined,
-          exercises: [...(ci.exercises ?? [])].sort(bySort).map((e: any) => ({
-            id: e.slug,
-            name: e.name,
-            mediaUrl: e.media_path ? mediaBaseUrl + e.media_path : undefined,
-            cues: e.cues ?? undefined,
-          })),
-        })),
-      }));
-
-      setCategories(mapped);
+  const load = useCallback(async () => {
+    if (!supabaseConfigured || !supabase) {
+      setCategories(staticInventory);
       setLoading(false);
-    })();
+      return;
+    }
+    const { data, error } = await supabase
+      .from("categories")
+      .select(
+        "id, slug, name, sort_order, hidden, circuits ( id, slug, name, subtitle, sort_order, hidden, exercises ( id, slug, name, media_path, cues, sort_order, hidden ) )"
+      )
+      .order("sort_order");
 
-    return () => {
-      active = false;
-    };
+    if (error || !data) {
+      // fall back to bundled data so the app still works offline / on error
+      setError(error?.message ?? "Failed to load inventory");
+      setCategories(staticInventory);
+      setLoading(false);
+      return;
+    }
+
+    const bySort = (a: { sort_order: number }, b: { sort_order: number }) =>
+      a.sort_order - b.sort_order;
+
+    const mapped: Category[] = (data as any[]).map((c) => ({
+      id: c.slug,
+      dbId: c.id,
+      name: c.name,
+      hidden: c.hidden,
+      sortOrder: c.sort_order,
+      circuits: [...(c.circuits ?? [])].sort(bySort).map((ci: any) => ({
+        id: ci.slug,
+        dbId: ci.id,
+        name: ci.name,
+        subtitle: ci.subtitle ?? undefined,
+        hidden: ci.hidden,
+        sortOrder: ci.sort_order,
+        exercises: [...(ci.exercises ?? [])].sort(bySort).map((e: any) => ({
+          id: e.slug,
+          dbId: e.id,
+          name: e.name,
+          mediaUrl: e.media_path ? mediaBaseUrl + e.media_path : undefined,
+          cues: e.cues ?? undefined,
+          hidden: e.hidden,
+          sortOrder: e.sort_order,
+        })),
+      })),
+    }));
+
+    setError(null);
+    setCategories(mapped);
+    setLoading(false);
   }, []);
 
-  return { categories, loading, error };
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  return { categories, loading, error, reload: load };
 }

@@ -5,6 +5,10 @@ export interface Exercise {
   mediaUrl?: string;
   /** Coaching cue text shown under the media. */
   cues?: string;
+  /** DB primary key (present when loaded from Supabase) — used for admin edits. */
+  dbId?: number;
+  hidden?: boolean;
+  sortOrder?: number;
 }
 
 export interface Circuit {
@@ -13,10 +17,16 @@ export interface Circuit {
   /** e.g. "10 reps each" — shown under the circuit title. */
   subtitle?: string;
   exercises: Exercise[];
+  dbId?: number;
+  hidden?: boolean;
+  sortOrder?: number;
 }
 
 export interface Category {
   id: string;
   name: string;
   circuits: Circuit[];
+  dbId?: number;
+  hidden?: boolean;
+  sortOrder?: number;
 }
