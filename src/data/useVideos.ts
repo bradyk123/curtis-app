@@ -11,11 +11,14 @@ export interface VideoClip {
   slug?: string;
   storagePath?: string;
   durationLabel?: string | null;
+  trimStart?: number | null;
+  trimEnd?: number | null;
   sortOrder?: number;
   hidden?: boolean;
 }
 
-const COLS = "id, slug, name, category, storage_path, duration_label, sort_order, hidden";
+const COLS =
+  "id, slug, name, category, storage_path, duration_label, trim_start, trim_end, sort_order, hidden";
 
 /** The bundled static clips, shaped as VideoClip — used before Supabase loads or if it fails. */
 const staticClips: VideoClip[] = staticVideos.map((c) => ({
@@ -68,6 +71,8 @@ export function useVideos() {
         storagePath: v.storage_path,
         videoUrl: videoBaseUrl + v.storage_path,
         durationLabel: v.duration_label,
+        trimStart: v.trim_start,
+        trimEnd: v.trim_end,
         sortOrder: v.sort_order,
         hidden: v.hidden,
       }))

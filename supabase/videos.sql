@@ -18,6 +18,8 @@ create table if not exists videos (
   category       text not null,
   storage_path   text not null,              -- filename in the "exercise-video" bucket, e.g. "a-skip.mp4"
   duration_label text,                        -- editable label like "0:12"; null = auto-detect on the client
+  trim_start     real,                         -- in-point (seconds); null = start of file
+  trim_end       real,                         -- out-point (seconds); null = end of file
   sort_order     int  not null default 0,    -- order within a category
   hidden         boolean not null default false,
   exercise_id    bigint references exercises(id) on delete set null,  -- Phase 3: link into training inventory

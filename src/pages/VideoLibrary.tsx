@@ -19,33 +19,60 @@ const catRank = (cat: string) => {
   return i === -1 ? Number.MAX_SAFE_INTEGER : i;
 };
 
-/** Seconds → "m:ss". */
-function fmt(seconds: number) {
-  if (!isFinite(seconds) || seconds <= 0) return null;
+/** Seconds → "m:ss" (always, incl. 0:00). */
+function clock(seconds: number) {
+  if (!isFinite(seconds) || seconds < 0) return "0:00";
   const m = Math.floor(seconds / 60);
   const s = Math.round(seconds % 60);
   return `${m}:${String(s).padStart(2, "0")}`;
 }
+/** Seconds → "m:ss", or null when unknown (used for the badge). */
+function fmt(seconds: number) {
+  return isFinite(seconds) && seconds > 0 ? clock(seconds) : null;
+}
 
-/** Plays a clip only while it's on screen — keeps a long grid of videos smooth on mobile. */
+/**
+ * Plays a clip only while it's on screen. Honors in/out trim points:
+ * if the clip is trimmed, it loops within [trimStart, trimEnd] instead of the whole file.
+ */
 function ClipVideo({ clip }: { clip: VideoClip }) {
   const ref = useRef<HTMLVideoElement>(null);
-  const [detected, setDetected] = useState<string | null>(null);
-  const duration = clip.durationLabel || detected;
+  const [detected, setDetected] = useState<number | null>(null);
+
+  const start = clip.trimStart ?? 0;
+  const hasEnd = clip.trimEnd != null && clip.trimEnd > start;
+  const end = hasEnd ? (clip.trimEnd as number) : null;
+  const trimmed = start > 0 || hasEnd;
+
+  // Displayed length: admin label wins; else the trimmed span; else the full detected length.
+  const badge =
+    clip.durationLabel ||
+    (trimmed ? fmt((end ?? detected ?? 0) - start) : detected != null ? fmt(detected) : null);
 
   useEffect(() => {
     const v = ref.current;
     if (!v) return;
     const io = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) v.play().catch(() => {});
-        else v.pause();
+        if (entry.isIntersecting) {
+          if (trimmed && (v.currentTime < start || (end != null && v.currentTime >= end))) {
+            v.currentTime = start;
+          }
+          v.play().catch(() => {});
+        } else v.pause();
       },
       { threshold: 0.25 }
     );
     io.observe(v);
     return () => io.disconnect();
-  }, []);
+  }, [start, end, trimmed]);
+
+  const onTime = (e: React.SyntheticEvent<HTMLVideoElement>) => {
+    if (!trimmed) return;
+    const v = e.currentTarget;
+    if (end != null && v.currentTime >= end) v.currentTime = start;
+    else if (v.currentTime < start - 0.1) v.currentTime = start;
+  };
 
   return (
     <div className="clip-media">
@@ -53,13 +80,17 @@ function ClipVideo({ clip }: { clip: VideoClip }) {
         ref={ref}
         src={clip.videoUrl}
         muted
-        loop
+        loop={!trimmed}
         autoPlay
         playsInline
         preload="metadata"
-        onLoadedMetadata={(e) => setDetected(fmt(e.currentTarget.duration))}
+        onLoadedMetadata={(e) => {
+          setDetected(e.currentTarget.duration);
+          if (trimmed) e.currentTarget.currentTime = start;
+        }}
+        onTimeUpdate={onTime}
       />
-      {duration && <span className="clip-duration">{duration}</span>}
+      {badge && <span className="clip-duration">{badge}</span>}
     </div>
   );
 }
@@ -74,8 +105,122 @@ function ClipCard({ clip }: { clip: VideoClip }) {
   );
 }
 
+/** Set in/out points by scrubbing. Non-destructive — saves seconds, never touches the file. */
+function TrimEditor({
+  clip,
+  onSave,
+  onReset,
+  onCancel,
+}: {
+  clip: VideoClip;
+  onSave: (start: number, end: number) => void;
+  onReset: () => void;
+  onCancel: () => void;
+}) {
+  const ref = useRef<HTMLVideoElement>(null);
+  const [dur, setDur] = useState(0);
+  const [start, setStart] = useState(clip.trimStart ?? 0);
+  const [end, setEnd] = useState(clip.trimEnd ?? 0);
+  const [ready, setReady] = useState(false);
+
+  const seek = (t: number) => {
+    const v = ref.current;
+    if (v) v.currentTime = Math.max(0, Math.min(t, dur || t));
+  };
+
+  const onMeta = (e: React.SyntheticEvent<HTMLVideoElement>) => {
+    const d = e.currentTarget.duration;
+    setDur(d);
+    const s = clip.trimStart ?? 0;
+    const en = clip.trimEnd != null && clip.trimEnd > 0 ? clip.trimEnd : d;
+    setStart(s);
+    setEnd(en);
+    e.currentTarget.currentTime = s;
+    setReady(true);
+  };
+
+  const changeStart = (val: number) => {
+    const v = Math.max(0, Math.min(val, end - 0.1));
+    setStart(v);
+    seek(v);
+  };
+  const changeEnd = (val: number) => {
+    const v = Math.min(dur, Math.max(val, start + 0.1));
+    setEnd(v);
+    seek(v);
+  };
+
+  const preview = () => {
+    const v = ref.current;
+    if (!v) return;
+    v.currentTime = start;
+    v.play().catch(() => {});
+  };
+  const onTime = (e: React.SyntheticEvent<HTMLVideoElement>) => {
+    const v = e.currentTarget;
+    if (v.currentTime >= end) {
+      v.pause();
+      v.currentTime = start;
+    }
+  };
+
+  return (
+    <div className="trim-editor">
+      <video
+        ref={ref}
+        src={clip.videoUrl}
+        muted
+        playsInline
+        preload="metadata"
+        onLoadedMetadata={onMeta}
+        onTimeUpdate={onTime}
+      />
+      <div className="trim-controls">
+        <div className="trim-row">
+          <span>Start {clock(start)}</span>
+          <input
+            type="range"
+            min={0}
+            max={dur || 0}
+            step={0.1}
+            value={start}
+            disabled={!ready}
+            onChange={(e) => changeStart(parseFloat(e.target.value))}
+          />
+        </div>
+        <div className="trim-row">
+          <span>End {clock(end)}</span>
+          <input
+            type="range"
+            min={0}
+            max={dur || 0}
+            step={0.1}
+            value={end}
+            disabled={!ready}
+            onChange={(e) => changeEnd(parseFloat(e.target.value))}
+          />
+        </div>
+        <div className="trim-meta">Plays {clock(Math.max(0, end - start))} of {clock(dur)}</div>
+        <div className="trim-actions">
+          <button className="text-btn" onClick={preview} disabled={!ready}>
+            Preview
+          </button>
+          <button className="text-btn primary" onClick={() => onSave(start, end)} disabled={!ready}>
+            Save trim
+          </button>
+          <button className="text-btn" onClick={onReset}>
+            Reset
+          </button>
+          <button className="text-btn" onClick={onCancel}>
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 interface EditHandlers {
-  categories: string[];
   canMoveUp: boolean;
   canMoveDown: boolean;
   onRename: (name: string) => void;
@@ -84,14 +229,35 @@ interface EditHandlers {
   onToggleHidden: () => void;
   onDelete: () => void;
   onMove: (dir: -1 | 1) => void;
+  onTrim: (start: number | null, end: number | null) => void;
 }
 
 /** Editable card (admins in edit mode). Fields save on blur. */
 function EditableClipCard({ clip, h }: { clip: VideoClip; h: EditHandlers }) {
+  const [trimming, setTrimming] = useState(false);
+  const isTrimmed = clip.trimStart != null || clip.trimEnd != null;
+
   return (
     <div className={`clip-card editing${clip.hidden ? " hidden-clip" : ""}`}>
-      <ClipVideo clip={clip} />
-      {clip.hidden && <div className="hidden-flag">Hidden from athletes</div>}
+      {trimming ? (
+        <TrimEditor
+          clip={clip}
+          onSave={(s, e) => {
+            h.onTrim(s, e);
+            setTrimming(false);
+          }}
+          onReset={() => {
+            h.onTrim(null, null);
+            setTrimming(false);
+          }}
+          onCancel={() => setTrimming(false)}
+        />
+      ) : (
+        <>
+          <ClipVideo clip={clip} />
+          {clip.hidden && <div className="hidden-flag">Hidden from athletes</div>}
+        </>
+      )}
       <div className="clip-edit">
         <label className="clip-edit-field">
           <span>Name</span>
@@ -115,7 +281,7 @@ function EditableClipCard({ clip, h }: { clip: VideoClip; h: EditHandlers }) {
           />
         </label>
         <label className="clip-edit-field">
-          <span>Duration</span>
+          <span>Duration label</span>
           <input
             className="dur-input"
             placeholder="auto"
@@ -132,6 +298,9 @@ function EditableClipCard({ clip, h }: { clip: VideoClip; h: EditHandlers }) {
           </button>
           <button className="icon-btn" disabled={!h.canMoveDown} onClick={() => h.onMove(1)} title="Move down">
             ↓
+          </button>
+          <button className={`text-btn${isTrimmed ? " active" : ""}`} onClick={() => setTrimming((t) => !t)}>
+            {trimming ? "Close" : isTrimmed ? "Trim ✓" : "Trim"}
           </button>
           <button className="text-btn" onClick={h.onToggleHidden}>
             {clip.hidden ? "Show" : "Hide"}
@@ -162,19 +331,14 @@ export function VideoLibrary() {
   }, [videos]);
 
   const clipsFor = (cat: string) =>
-    videos
-      .filter((c) => c.category === cat)
-      .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
+    videos.filter((c) => c.category === cat).sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
 
   // ── mutations (optimistic local update + persist) ──────────────────
   const patchLocal = (id: number, patch: Partial<VideoClip>) =>
     setVideos((vs) => vs.map((v) => (v.id === id ? { ...v, ...patch } : v)));
 
   const fail = (e?: string) => {
-    if (e) {
-      setMsg(`Couldn't save: ${e}`);
-      // pull fresh truth back so the UI doesn't lie after a failed write
-    }
+    if (e) setMsg(`Couldn't save: ${e}`);
   };
 
   const rename = async (clip: VideoClip, name: string) => {
@@ -183,7 +347,6 @@ export function VideoLibrary() {
   };
 
   const recategorize = async (clip: VideoClip, category: string) => {
-    // drop it at the end of the destination category
     const maxOrder = Math.max(-1, ...videos.filter((v) => v.category === category).map((v) => v.sortOrder ?? 0));
     const sortOrder = maxOrder + 1;
     patchLocal(clip.id!, { category, sortOrder });
@@ -194,6 +357,13 @@ export function VideoLibrary() {
     const value = label || null;
     patchLocal(clip.id!, { durationLabel: value });
     fail((await updateVideoFields(clip.id!, { duration_label: value })).error);
+  };
+
+  const setTrim = async (clip: VideoClip, start: number | null, end: number | null) => {
+    const trim_start = start != null ? Math.round(start * 10) / 10 : null;
+    const trim_end = end != null ? Math.round(end * 10) / 10 : null;
+    patchLocal(clip.id!, { trimStart: trim_start, trimEnd: trim_end });
+    fail((await updateVideoFields(clip.id!, { trim_start, trim_end })).error);
   };
 
   const toggleHidden = async (clip: VideoClip) => {
@@ -230,7 +400,7 @@ export function VideoLibrary() {
 
   const onFileChosen = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    e.target.value = ""; // allow re-selecting the same file later
+    e.target.value = "";
     if (!file) return;
     const cat = uploadTarget.current;
     setUploadingCat(cat);
@@ -276,7 +446,13 @@ export function VideoLibrary() {
 
       {msg && <div className="vlib-msg">{msg}</div>}
 
-      {edit && <datalist id="vlib-categories">{categories.map((c) => <option key={c} value={c} />)}</datalist>}
+      {edit && (
+        <datalist id="vlib-categories">
+          {categories.map((c) => (
+            <option key={c} value={c} />
+          ))}
+        </datalist>
+      )}
 
       {categories.map((cat) => {
         const clips = clipsFor(cat);
@@ -285,11 +461,7 @@ export function VideoLibrary() {
             <h3>
               {cat} <span style={{ fontWeight: 400 }}>· {clips.length}</span>
               {edit && (
-                <button
-                  className="cat-upload-btn"
-                  disabled={uploadingCat === cat}
-                  onClick={() => pickUpload(cat)}
-                >
+                <button className="cat-upload-btn" disabled={uploadingCat === cat} onClick={() => pickUpload(cat)}>
                   {uploadingCat === cat ? "Uploading…" : "+ Upload"}
                 </button>
               )}
@@ -301,7 +473,6 @@ export function VideoLibrary() {
                     key={c.id ?? c.videoUrl}
                     clip={c}
                     h={{
-                      categories,
                       canMoveUp: i > 0,
                       canMoveDown: i < clips.length - 1,
                       onRename: (name) => rename(c, name),
@@ -310,6 +481,7 @@ export function VideoLibrary() {
                       onToggleHidden: () => toggleHidden(c),
                       onDelete: () => remove(c),
                       onMove: (dir) => move(cat, i, dir),
+                      onTrim: (s, e) => setTrim(c, s, e),
                     }}
                   />
                 ) : (

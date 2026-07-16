@@ -1,7 +1,8 @@
 import { supabase, videoBaseUrl } from "../lib/supabase";
 import type { VideoClip } from "./useVideos";
 
-const COLS = "id, slug, name, category, storage_path, duration_label, sort_order, hidden";
+const COLS =
+  "id, slug, name, category, storage_path, duration_label, trim_start, trim_end, sort_order, hidden";
 
 /** "Box Jump 2.mov" → "box-jump-2" (also used to name the storage file). */
 export function slugify(s: string): string {
@@ -43,6 +44,8 @@ function toClip(v: any): VideoClip {
     storagePath: v.storage_path,
     videoUrl: videoBaseUrl + v.storage_path,
     durationLabel: v.duration_label,
+    trimStart: v.trim_start,
+    trimEnd: v.trim_end,
     sortOrder: v.sort_order,
     hidden: v.hidden,
   };
