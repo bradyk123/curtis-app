@@ -19,6 +19,9 @@ export function Header() {
       <Link className="brand-lockup" to="/">
         <Logo size={30} className="logo" />
         <h1>Beach Track Club</h1>
+        <span className="app-version" title="Deployed build">
+          v{__APP_VERSION__}·{__BUILD_SHA__}
+        </span>
       </Link>
       <div className="actions">
         {loading ? null : user ? (

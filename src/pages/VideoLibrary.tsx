@@ -3,6 +3,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { useVideos, type VideoClip } from "../data/useVideos";
 import { videoLibrary as staticVideos } from "../data/videoLibrary";
 import { useProfile } from "../lib/profile";
+import { useFlag } from "../data/useFlag";
 import {
   slugify,
   uniqueSlug,
@@ -318,6 +319,7 @@ export function VideoLibrary() {
   const { videos, loading, setVideos } = useVideos();
   const { profile } = useProfile();
   const isAdmin = !!profile?.is_admin;
+  const { enabled: videoOn, loading: flagLoading, setEnabled: setVideoOn } = useFlag("video_library");
 
   const [edit, setEdit] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
@@ -444,6 +446,18 @@ export function VideoLibrary() {
 
   const visibleCount = videos.filter((v) => !v.hidden).length;
 
+  // Athletes can't open the library until the coach turns it on.
+  if (!flagLoading && !videoOn && !isAdmin) {
+    return (
+      <div>
+        <Link className="back-link" to="/">
+          &larr; Back
+        </Link>
+        <div className="empty-state">The video library isn’t available yet.</div>
+      </div>
+    );
+  }
+
   return (
     <div>
       <Link className="back-link" to="/">
@@ -462,6 +476,17 @@ export function VideoLibrary() {
           </button>
         )}
       </div>
+
+      {isAdmin && (
+        <div className="vlib-visibility">
+          <span>
+            {videoOn ? "🟢 Visible to athletes" : "🔒 Hidden from athletes"}
+          </span>
+          <button className={`text-btn${videoOn ? "" : " primary"}`} onClick={() => setVideoOn(!videoOn)}>
+            {videoOn ? "Hide from athletes" : "Show to athletes"}
+          </button>
+        </div>
+      )}
 
       {msg && <div className="vlib-msg">{msg}</div>}
 

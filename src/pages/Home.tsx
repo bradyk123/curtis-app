@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useInventory } from "../data/useInventory";
 import { useVideos } from "../data/useVideos";
 import { useProfile } from "../lib/profile";
+import { useFlag } from "../data/useFlag";
 import { updateInvRow, persistOrder } from "../data/inventoryAdmin";
 import type { Category, Circuit } from "../types";
 
@@ -12,6 +13,8 @@ export function Home() {
   const { videos } = useVideos();
   const { profile } = useProfile();
   const isAdmin = !!profile?.is_admin;
+  const { enabled: videoOn } = useFlag("video_library");
+  const videosVisible = videoOn || isAdmin;
 
   const [edit, setEdit] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
@@ -29,9 +32,11 @@ export function Home() {
         }
       }
     }
-    const clips = videos.filter((v) => !v.hidden && v.name.toLowerCase().includes(q));
+    const clips = videosVisible
+      ? videos.filter((v) => !v.hidden && v.name.toLowerCase().includes(q))
+      : [];
     return { exercises, circuits, clips };
-  }, [q, inventory, videos]);
+  }, [q, inventory, videos, videosVisible]);
 
   const total = results
     ? results.exercises.length + results.circuits.length + results.clips.length
@@ -185,10 +190,11 @@ export function Home() {
         </div>
       ) : (
         <>
-          {!edit && (
+          {!edit && videosVisible && (
             <Link className="pilot-banner" to="/video-library">
               <span>
                 🎬 <b>Video Library</b> — coaching clips by category
+                {!videoOn && <span className="hidden-tag"> · hidden from athletes</span>}
               </span>
               <span className="chevron">&gt;</span>
             </Link>
