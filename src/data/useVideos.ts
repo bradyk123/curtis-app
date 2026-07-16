@@ -79,5 +79,5 @@ export function useVideos() {
     load();
   }, [load]);
 
-  return { videos, loading, error, reload: load };
+  return { videos, loading, error, reload: load, setVideos };
 }

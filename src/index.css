@@ -256,6 +256,155 @@ a {
   color: var(--text);
 }
 
+/* ── Video Library admin edit mode ────────────────────────── */
+.vlib-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 24px 0;
+}
+
+.vlib-edit-toggle {
+  flex-shrink: 0;
+  border: 1px solid var(--brand);
+  background: white;
+  color: var(--brand);
+  border-radius: 8px;
+  padding: 8px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.vlib-edit-toggle.on {
+  background: var(--brand);
+  color: white;
+}
+
+.vlib-msg {
+  margin: 12px 24px 0;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+  font-size: 13px;
+}
+
+.cat-upload-btn {
+  margin-left: 10px;
+  border: 1px dashed var(--brand);
+  background: white;
+  color: var(--brand);
+  border-radius: 6px;
+  padding: 3px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  vertical-align: middle;
+}
+
+.cat-upload-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.clip-card.editing {
+  border-color: var(--brand);
+}
+
+.clip-card.hidden-clip {
+  opacity: 0.6;
+}
+
+.hidden-flag {
+  background: #fff7ed;
+  color: #9a3412;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 12px;
+}
+
+.clip-edit {
+  padding: 10px 12px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.clip-edit-field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.clip-edit-field > span {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.clip-edit-field input {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-size: 13px;
+  font-family: inherit;
+  width: 100%;
+}
+
+.clip-edit-field input:focus {
+  outline: none;
+  border-color: var(--brand);
+}
+
+.clip-edit-field .dur-input {
+  max-width: 90px;
+}
+
+.clip-edit-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.clip-edit-actions .icon-btn {
+  border: 1px solid var(--border);
+  background: white;
+  border-radius: 6px;
+  width: 30px;
+  height: 30px;
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+  color: var(--text);
+}
+
+.clip-edit-actions .text-btn {
+  border: 1px solid var(--border);
+  background: white;
+  border-radius: 6px;
+  padding: 0 12px;
+  height: 30px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--text);
+}
+
+.clip-edit-actions .text-btn.danger {
+  border-color: #fecaca;
+  color: #b91c1c;
+  margin-left: auto;
+}
+
+.clip-edit-actions .icon-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
 .header .user-chip {
   display: flex;
   align-items: center;
