@@ -192,10 +192,21 @@ a {
   margin-top: 18px;
   display: flex;
   align-items: center;
+  gap: 10px;
   background: var(--charcoal-2);
   border: 1px solid var(--border);
   border-radius: 10px;
   padding: 10px 14px;
+}
+
+.search-bar:focus-within {
+  border-color: var(--gold);
+}
+
+.search-icon {
+  color: var(--text-muted);
+  font-size: 18px;
+  line-height: 1;
 }
 
 .search-bar input {
@@ -210,6 +221,68 @@ a {
 
 .search-bar input::placeholder {
   color: var(--text-muted);
+}
+
+.search-clear {
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 2px 4px;
+  line-height: 1;
+}
+
+.search-clear:hover {
+  color: var(--text);
+}
+
+/* video library search wrapper (outside the hero) */
+.vlib-search {
+  padding: 14px 24px 0;
+}
+
+.vlib-search .search-bar {
+  margin-top: 0;
+}
+
+/* ── Search results ─────────────────────────────────────── */
+.results-count {
+  padding: 16px 24px 0;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.result-meta {
+  display: block;
+  margin-top: 2px;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+.thumb-video {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gold);
+  font-size: 16px;
+}
+
+/* deep-link highlight when arriving from global search */
+.clip-card.focus-flash {
+  animation: focus-flash 2.2s ease-out;
+}
+
+@keyframes focus-flash {
+  0%,
+  40% {
+    box-shadow: 0 0 0 3px var(--gold);
+    border-color: var(--gold);
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
 }
 
 /* ── Section + list ─────────────────────────────────────── */

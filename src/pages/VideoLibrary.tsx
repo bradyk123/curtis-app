@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { useVideos, type VideoClip } from "../data/useVideos";
 import { videoLibrary as staticVideos } from "../data/videoLibrary";
 import { useProfile } from "../lib/profile";
@@ -96,9 +96,9 @@ function ClipVideo({ clip }: { clip: VideoClip }) {
 }
 
 /** Read-only card (athletes + admins not in edit mode). */
-function ClipCard({ clip }: { clip: VideoClip }) {
+function ClipCard({ clip, anchorId, flash }: { clip: VideoClip; anchorId?: string; flash?: boolean }) {
   return (
-    <div className="clip-card">
+    <div className={`clip-card${flash ? " focus-flash" : ""}`} id={anchorId}>
       <ClipVideo clip={clip} />
       <div className="clip-name">{clip.name}</div>
     </div>
@@ -322,8 +322,25 @@ export function VideoLibrary() {
   const [edit, setEdit] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
   const [uploadingCat, setUploadingCat] = useState<string | null>(null);
+  const [query, setQuery] = useState("");
+  const [flashId, setFlashId] = useState<string | null>(null);
   const fileInput = useRef<HTMLInputElement>(null);
   const uploadTarget = useRef<string>("");
+  const [searchParams] = useSearchParams();
+  const focus = searchParams.get("focus");
+
+  // Deep-link from global search: scroll to the clip and flash it.
+  useEffect(() => {
+    if (!focus || videos.length === 0) return;
+    const el = document.getElementById(`clip-${focus}`);
+    if (!el) return;
+    el.scrollIntoView({ behavior: "smooth", block: "center" });
+    setFlashId(focus);
+    const t = setTimeout(() => setFlashId(null), 2200);
+    return () => clearTimeout(t);
+  }, [focus, videos]);
+
+  const q = edit ? "" : query.trim().toLowerCase();
 
   const categories = useMemo(() => {
     const cats = [...new Set(videos.map((c) => c.category))];
@@ -331,7 +348,9 @@ export function VideoLibrary() {
   }, [videos]);
 
   const clipsFor = (cat: string) =>
-    videos.filter((c) => c.category === cat).sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
+    videos
+      .filter((c) => c.category === cat && (!q || c.name.toLowerCase().includes(q)))
+      .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
 
   // ── mutations (optimistic local update + persist) ──────────────────
   const patchLocal = (id: number, patch: Partial<VideoClip>) =>
@@ -446,6 +465,26 @@ export function VideoLibrary() {
 
       {msg && <div className="vlib-msg">{msg}</div>}
 
+      {!edit && (
+        <div className="vlib-search">
+          <div className="search-bar">
+            <span className="search-icon">⌕</span>
+            <input
+              placeholder="Search clips…"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              autoCapitalize="none"
+              autoCorrect="off"
+            />
+            {query && (
+              <button className="search-clear" onClick={() => setQuery("")} aria-label="Clear search">
+                ✕
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
       {edit && (
         <datalist id="vlib-categories">
           {categories.map((c) => (
@@ -454,8 +493,13 @@ export function VideoLibrary() {
         </datalist>
       )}
 
+      {q && categories.every((cat) => clipsFor(cat).length === 0) && (
+        <div className="empty-state">No clips match “{query.trim()}”.</div>
+      )}
+
       {categories.map((cat) => {
         const clips = clipsFor(cat);
+        if (clips.length === 0) return null;
         return (
           <section className="category-section" key={cat}>
             <h3>
@@ -485,7 +529,12 @@ export function VideoLibrary() {
                     }}
                   />
                 ) : (
-                  <ClipCard key={c.id ?? c.videoUrl} clip={c} />
+                  <ClipCard
+                    key={c.id ?? c.videoUrl}
+                    clip={c}
+                    anchorId={c.slug ? `clip-${c.slug}` : undefined}
+                    flash={!!c.slug && c.slug === flashId}
+                  />
                 )
               )}
             </div>
