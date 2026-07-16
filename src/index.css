@@ -50,6 +50,55 @@ a {
   text-decoration: none;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
+/* ── Interactive feedback (makes taps feel responsive) ──────── */
+button {
+  font-family: var(--font-body);
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease,
+    transform 0.06s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+}
+
+button:not(:disabled) {
+  cursor: pointer;
+}
+
+/* quick "press" on tap/click for every button */
+button:not(:disabled):active {
+  transform: translateY(1px) scale(0.985);
+}
+
+/* clear keyboard focus ring in brand gold */
+:where(a, button, input, select):focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+/* rows respond to touch, and their chevron nudges forward */
+.list-row,
+.pilot-banner {
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.list-row:active,
+.pilot-banner:active {
+  background: var(--charcoal-3);
+}
+
+.chevron {
+  transition: transform 0.15s ease;
+}
+
+.list-row:hover .chevron,
+.pilot-banner:hover .chevron {
+  transform: translateX(3px);
+}
+
 /* ── Header ─────────────────────────────────────────────── */
 .header {
   background: var(--charcoal);
@@ -627,8 +676,8 @@ a {
 .text-btn {
   border: 1px solid var(--border);
   background: var(--charcoal-2);
-  border-radius: 6px;
-  height: 30px;
+  border-radius: 8px;
+  height: 36px;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
@@ -637,18 +686,19 @@ a {
 }
 
 .icon-btn {
-  width: 30px;
-  font-size: 15px;
+  width: 36px;
+  font-size: 16px;
   line-height: 1;
 }
 
 .text-btn {
-  padding: 0 12px;
+  padding: 0 14px;
 }
 
-.icon-btn:hover,
-.text-btn:hover {
-  border-color: var(--charcoal-3);
+.icon-btn:not(:disabled):hover,
+.text-btn:not(:disabled):hover {
+  border-color: var(--gold);
+  background: var(--charcoal-3);
 }
 
 .text-btn.primary {
@@ -1077,4 +1127,72 @@ a {
 .hidden-tag {
   color: var(--gold);
   font-weight: 600;
+}
+
+/* ── Hover polish (keeps colored buttons on-brand while hovering) ── */
+.vlib-edit-toggle:not(.on):not(:disabled):hover {
+  background: var(--charcoal-2);
+}
+.cat-upload-btn:not(:disabled):hover {
+  background: var(--charcoal-2);
+}
+.approve-btn:not(:disabled):hover {
+  background: var(--gold-strong);
+}
+.reject-btn:not(:disabled):hover {
+  background: var(--charcoal-3);
+  border-color: var(--charcoal-3);
+}
+.text-btn.primary:not(:disabled):hover {
+  background: var(--gold-strong);
+  border-color: var(--gold-strong);
+  color: #1a1204;
+}
+.text-btn.danger:not(:disabled):hover {
+  background: rgba(240, 115, 111, 0.12);
+  border-color: var(--danger);
+  color: var(--danger);
+}
+.header .user-chip:hover {
+  background: var(--charcoal-3);
+  border-color: var(--charcoal-3);
+}
+.header .user-chip,
+.thumb-edit {
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.06s ease;
+}
+.thumb-edit:not(:disabled):active {
+  transform: scale(0.96);
+}
+
+/* content eases in on load/navigation so screens don't snap in */
+.category-section,
+.clip-grid,
+.search-results,
+.approve-card,
+.pilot-banner {
+  animation: rise-in 0.22s ease both;
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
 }
