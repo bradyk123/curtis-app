@@ -4,7 +4,7 @@ Paste this into a new Claude Code chat, or say "read HANDOFF.md". Everything her
 
 ## ▶ Start here (next session)
 Do these roughly in order — but ask Brady which he wants first:
-1. **Finish Cloudflare Pages** — Brady connects the repo in the Cloudflare dashboard (steps under "Open items"). Once it deploys, load the `*.pages.dev` URL, verify sign-in + video library work, and confirm auto-deploy by pushing a tiny change.
+1. **Cloudflare Pages — DONE (2026-07-16).** Live at https://curtis-app.pages.dev, auto-deploys from `main` on git push (verified). Build `npm run build`, output `dist`. Owner is the `team@beachtrackclub.com` Cloudflare account (signed in via GitHub). Still to verify: sign-in + video library on the live site (needs Brady's password — the auth page renders and Supabase config loads fine).
 2. **Then feature work — the Scheduling tab** is the natural next build now that accounts + roles exist (coach creates sessions, athletes view/RSVP). Design the `sessions` table + RLS (coach writes, athletes read), add the tab + admin-gated create form.
 3. **Housekeeping when convenient:** rotate the Supabase `service_role` key + admin password (were exposed in chat); delete the `demo@` and `athlete1@` test accounts; tidy the raw video clip names.
 
@@ -15,7 +15,7 @@ A track & field training web app for a coach (Curtis). Being built by Brady (own
 
 - **Repo:** https://github.com/beachtrackclub/curtis-app (branch `main`). Transferred from `bradyk123` on 2026-07-16; old `bradyk123/curtis-app` links redirect.
 - **Live (GitHub Pages):** https://beachtrackclub.github.io/curtis-app/ (being retired in favor of Cloudflare Pages)
-- **Live (Cloudflare Pages):** being connected — will be a `*.pages.dev` URL (auto-deploys on git push)
+- **Live (Cloudflare Pages):** https://curtis-app.pages.dev (primary; auto-deploys on git push to `main`). Project `curtis-app` on the `team@beachtrackclub.com` Cloudflare account (ID `6919827b39ed31c40776e4804c4cc1a3`).
 - **Stack:** React + TypeScript + Vite, React Router (HashRouter), Supabase backend
 
 ## Dev environment (important)
@@ -51,8 +51,9 @@ A track & field training web app for a coach (Curtis). Being built by Brady (own
 - Video source: Google Drive "Vids" folder (shared link), organized by category. New taxonomy source: "Training Item Index" Google Sheet.
 
 ## Open items / next steps
-- **Finish Cloudflare Pages connect** (owner does the dashboard OAuth: dash.cloudflare.com → Workers & Pages → Create → Pages → Connect to Git → repo `beachtrackclub/curtis-app`, build `npm run build`, output `dist`), then verify the live site + auto-deploy.
+- **Verify Cloudflare live site while signed in** — sign in at https://curtis-app.pages.dev and confirm the video library + inventory load (build/deploy/auto-deploy already verified; only the authenticated flows are unconfirmed).
 - **Security:** rotate the Supabase `service_role` key and the admin password (both were pasted in chat during setup).
+- **GitHub credentials note:** the repo was transferred `bradyk123 → beachtrackclub` (2026-07-16); local `origin` re-pointed and push access confirmed. If a future machine can't push, re-auth GitHub as `beachtrackclub`.
 - **Cleanup:** retire `demo@` and `athlete1@` test accounts.
 - **Content:** video clip names come from raw Drive filenames (some like "Img 3195") — tidy them / map to the sheet's Semantic Name + Variant taxonomy. Coaching cues are largely missing from the source data.
 - **Bigger:** the new video library currently coexists with the old GIF/circuit inventory; the deeper project is merging them into one Category → Semantic Name → Variant model.
