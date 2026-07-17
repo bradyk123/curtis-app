@@ -1031,6 +1031,114 @@ button:not(:disabled):active {
   font-size: 14px;
 }
 
+/* ── Auth hardening: hints, links, code + 2FA ───────────── */
+.field-hint {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.link-btn {
+  align-self: flex-start;
+  border: none;
+  background: none;
+  color: var(--gold);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  font-family: var(--font-body);
+}
+
+.code-input {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 22px;
+  letter-spacing: 0.4em;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  background: var(--charcoal-2);
+  color: var(--text);
+  font-family: var(--font-body);
+  width: 100%;
+}
+
+.code-input:focus {
+  outline: none;
+  border-color: var(--gold);
+}
+
+.mfa-section {
+  margin-top: 22px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mfa-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.mfa-badge {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+.mfa-badge.on {
+  background: rgba(233, 182, 60, 0.16);
+  color: var(--gold);
+}
+
+.mfa-badge.off {
+  background: var(--charcoal-3);
+  color: var(--text-muted);
+}
+
+.mfa-qr {
+  align-self: center;
+  background: #fff;
+  padding: 10px;
+  border-radius: 10px;
+  line-height: 0;
+}
+
+.mfa-qr svg {
+  width: 170px;
+  height: 170px;
+  display: block;
+}
+
+.mfa-secret {
+  margin: 0;
+  font-size: 12px;
+  color: var(--text-muted);
+  word-break: break-all;
+}
+
+.mfa-secret code {
+  color: var(--text);
+  background: var(--charcoal-2);
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+
+.mfa-actions {
+  display: flex;
+  gap: 8px;
+}
+
 /* ── Inventory edit mode ────────────────────────────────── */
 .hero-head {
   display: flex;

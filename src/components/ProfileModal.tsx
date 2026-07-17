@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from "react";
 import { useProfile, type Role } from "../lib/profile";
+import { TwoFactorSetup } from "./TwoFactorSetup";
 
 export function ProfileModal({ onClose }: { onClose: () => void }) {
   const { profile, update } = useProfile();
@@ -64,6 +65,8 @@ export function ProfileModal({ onClose }: { onClose: () => void }) {
             {busy ? "Saving…" : "Save"}
           </button>
         </form>
+
+        <TwoFactorSetup />
       </div>
     </div>
   );

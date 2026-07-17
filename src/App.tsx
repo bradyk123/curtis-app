@@ -7,17 +7,25 @@ import { CircuitDetail } from "./pages/CircuitDetail";
 import { ExerciseDetail } from "./pages/ExerciseDetail";
 import { VideoLibrary } from "./pages/VideoLibrary";
 import { AuthPage } from "./pages/AuthPage";
+import { ResetPassword } from "./pages/ResetPassword";
+import { MfaChallenge } from "./pages/MfaChallenge";
 import { PendingScreen } from "./pages/PendingScreen";
 import { AdminPanel } from "./pages/AdminPanel";
 
 export function App() {
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, mfaRequired, recovery } = useAuth();
   const { profile, loading: profileLoading } = useProfile();
 
   if (authLoading) return <div className="auth-loading">Beach Track Club…</div>;
 
+  // Following a password-reset email link → set a new password.
+  if (recovery) return <ResetPassword />;
+
   // Not signed in → sign in / sign up gate.
   if (!user) return <AuthPage />;
+
+  // Signed in but 2FA not yet satisfied → second-factor challenge.
+  if (mfaRequired) return <MfaChallenge />;
 
   // Signed in but profile still loading.
   if (profileLoading) return <div className="auth-loading">Beach Track Club…</div>;
