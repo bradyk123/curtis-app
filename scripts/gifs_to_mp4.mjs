@@ -61,14 +61,17 @@ async function getSource(mediaPath) {
 }
 
 function convert(src, outMp4) {
-  // 2x upscale (even dims guaranteed) with lanczos + gentle unsharp; H.264 yuv420p
+  // Denoise FIRST (the source has real grain/compression noise — sharpening it
+  // just amplifies the grain), THEN 2x lanczos upscale + a very light sharpen.
+  // hqdn3d spatial+temporal smooths the grainy track texture across frames.
   execFileSync(
     FFMPEG,
     [
       "-y", "-i", src,
-      "-vf", "scale=iw*2:ih*2:flags=lanczos,unsharp=5:5:0.8:5:5:0.0,format=yuv420p",
+      "-vf",
+      "hqdn3d=8:6:6:6,scale=iw*2:ih*2:flags=lanczos,unsharp=3:3:0.3:3:3:0.0,format=yuv420p",
       "-an", "-movflags", "+faststart", "-pix_fmt", "yuv420p",
-      "-c:v", "libx264", "-profile:v", "high", "-crf", "23", "-preset", "slow",
+      "-c:v", "libx264", "-profile:v", "high", "-crf", "20", "-preset", "slow",
       outMp4,
     ],
     { stdio: "ignore" }

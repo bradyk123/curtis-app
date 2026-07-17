@@ -1,7 +1,7 @@
 {
   "name": "curtis-app",
   "private": true,
-  "version": "9",
+  "version": "10",
   "type": "module",
   "scripts": {
     "dev": "vite",

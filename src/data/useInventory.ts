@@ -3,6 +3,10 @@ import type { Category } from "../types";
 import { inventory as staticInventory } from "./inventory";
 import { supabase, supabaseConfigured, mediaBaseUrl } from "../lib/supabase";
 
+/** Bump when exercise MP4s are re-encoded so clients fetch the new versions
+ *  instead of a cached copy. (e=2: denoised re-encode.) */
+const ENCODE_VERSION = 2;
+
 /**
  * Loads the training inventory.
  *
@@ -62,7 +66,9 @@ export function useInventory() {
           mediaUrl: e.media_path ? mediaBaseUrl + e.media_path : undefined,
           videoUrl:
             e.media_path && /\.(gif|webp|png|jpe?g)$/i.test(e.media_path)
-              ? mediaBaseUrl + e.media_path.replace(/\.(gif|webp|png|jpe?g)$/i, ".mp4")
+              ? mediaBaseUrl +
+                e.media_path.replace(/\.(gif|webp|png|jpe?g)$/i, ".mp4") +
+                `?e=${ENCODE_VERSION}` // cache-bust when clips are re-encoded
               : undefined,
           cues: e.cues ?? undefined,
           hidden: e.hidden,
