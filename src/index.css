@@ -528,10 +528,10 @@ button:not(:disabled):active {
 /* ── Exercise / cues ────────────────────────────────────── */
 .exercise-media {
   width: 100%;
-  max-width: 440px; /* keep the demo compact so cues stay visible */
+  max-width: min(420px, 78vw); /* shrink relative to the phone screen too */
   margin: 0 auto;
   aspect-ratio: 16 / 10;
-  max-height: 40vh; /* never let the GIF push the cues off-screen */
+  max-height: 34vh; /* never let the GIF push the cues off-screen */
   background: var(--charcoal-2);
   display: flex;
   align-items: center;
