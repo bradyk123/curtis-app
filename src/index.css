@@ -458,6 +458,34 @@ button:not(:disabled):active {
   line-height: 1.55;
 }
 
+.cues-input {
+  width: 100%;
+  background: var(--charcoal-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.5;
+  padding: 10px 12px;
+  resize: vertical;
+}
+
+.cues-input:focus {
+  outline: none;
+  border-color: var(--gold);
+}
+
+.cues-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.cues .link-btn {
+  margin-top: 10px;
+}
+
 .empty-state {
   padding: 24px;
   color: var(--text-muted);

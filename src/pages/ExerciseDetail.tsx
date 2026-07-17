@@ -4,11 +4,12 @@ import { useInventory } from "../data/useInventory";
 import { useVideos, type VideoClip } from "../data/useVideos";
 import { useProfile } from "../lib/profile";
 import { updateVideoFields } from "../data/videoAdmin";
+import { updateInvRow } from "../data/inventoryAdmin";
 import { ClipVideo } from "../components/ClipVideo";
 
 export function ExerciseDetail() {
   const { circuitId, exerciseId } = useParams();
-  const { categories, loading } = useInventory();
+  const { categories, loading, setCategories } = useInventory();
   const { videos, setVideos } = useVideos();
   const { profile } = useProfile();
   const isAdmin = !!profile?.is_admin;
@@ -17,6 +18,8 @@ export function ExerciseDetail() {
   const [picker, setPicker] = useState(false);
   const [pq, setPq] = useState("");
   const [msg, setMsg] = useState<string | null>(null);
+  const [editingCues, setEditingCues] = useState(false);
+  const [cuesDraft, setCuesDraft] = useState("");
 
   const circuit = categories.flatMap((c) => c.circuits).find((c) => c.id === circuitId);
   const exercise = circuit?.exercises.find((e) => e.id === exerciseId);
@@ -47,6 +50,27 @@ export function ExerciseDetail() {
     fail((await updateVideoFields(clip.id!, { exercise_id: null })).error);
   };
 
+  const saveCues = async () => {
+    const text = cuesDraft.trim();
+    setCategories((cs) =>
+      cs.map((c) => ({
+        ...c,
+        circuits: c.circuits.map((ci) =>
+          ci.dbId === circuit!.dbId
+            ? {
+                ...ci,
+                exercises: ci.exercises.map((e) =>
+                  e.dbId === exercise!.dbId ? { ...e, cues: text || undefined } : e
+                ),
+              }
+            : ci
+        ),
+      }))
+    );
+    setEditingCues(false);
+    fail((await updateInvRow("exercises", exercise!.dbId!, { cues: text || null })).error);
+  };
+
   const q = pq.trim().toLowerCase();
   const pickerClips = videos
     .filter((v) => v.exerciseId !== exDbId)
@@ -72,7 +96,41 @@ export function ExerciseDetail() {
 
       <div className="cues">
         <h3>{exercise.name}</h3>
-        <p>{exercise.cues ?? "Cues coming soon."}</p>
+        {editingCues ? (
+          <>
+            <textarea
+              className="cues-input"
+              rows={4}
+              placeholder="Coaching cues — e.g. drive the knee, stay tall, land soft…"
+              value={cuesDraft}
+              onChange={(e) => setCuesDraft(e.target.value)}
+              autoFocus
+            />
+            <div className="cues-actions">
+              <button className="text-btn primary" onClick={saveCues}>
+                Save cues
+              </button>
+              <button className="text-btn" onClick={() => setEditingCues(false)}>
+                Cancel
+              </button>
+            </div>
+          </>
+        ) : (
+          <>
+            <p>{exercise.cues ?? "Cues coming soon."}</p>
+            {isAdmin && (
+              <button
+                className="link-btn"
+                onClick={() => {
+                  setCuesDraft(exercise.cues ?? "");
+                  setEditingCues(true);
+                }}
+              >
+                {exercise.cues ? "Edit cues" : "Add cues"}
+              </button>
+            )}
+          </>
+        )}
       </div>
 
       {showVideos && (
