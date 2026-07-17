@@ -528,24 +528,33 @@ button:not(:disabled):active {
 /* ── Exercise / cues ────────────────────────────────────── */
 .exercise-media {
   width: 100%;
+  max-width: 440px; /* keep the demo compact so cues stay visible */
+  margin: 0 auto;
   aspect-ratio: 16 / 10;
+  max-height: 40vh; /* never let the GIF push the cues off-screen */
   background: var(--charcoal-2);
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--text-muted);
   font-size: 14px;
-  background-size: cover;
+  background-size: contain; /* show the whole movement, smaller */
+  background-repeat: no-repeat;
   background-position: center;
+  border-radius: 14px;
 }
 
 .cues {
-  padding: 24px;
+  margin: 18px 24px 32px;
+  padding: 20px 22px 24px;
+  background: var(--charcoal);
+  border: 1px solid var(--border);
+  border-radius: 16px;
 }
 
 .cues h3 {
-  margin: 0 0 8px;
-  font-size: 18px;
+  margin: 0 0 12px;
+  font-size: 20px;
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
@@ -553,7 +562,9 @@ button:not(:disabled):active {
 .cues p {
   margin: 0;
   color: var(--text);
-  line-height: 1.55;
+  font-size: 17px;
+  line-height: 1.7;
+  white-space: pre-wrap; /* respect the line breaks a coach types */
 }
 
 .cues-input {
