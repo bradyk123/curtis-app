@@ -8,6 +8,36 @@ import { updateVideoFields } from "../data/videoAdmin";
 import { updateInvRow } from "../data/inventoryAdmin";
 import { ClipVideo } from "../components/ClipVideo";
 
+/**
+ * Shows the exercise demo: the higher-quality MP4 re-encode when available,
+ * falling back to the original GIF if the video is missing or fails to load.
+ */
+function ExerciseMedia({ videoUrl, gifUrl }: { videoUrl?: string; gifUrl?: string }) {
+  const [videoFailed, setVideoFailed] = useState(false);
+  if (videoUrl && !videoFailed) {
+    return (
+      <video
+        className="exercise-media"
+        src={videoUrl}
+        poster={gifUrl}
+        autoPlay
+        loop
+        muted
+        playsInline
+        onError={() => setVideoFailed(true)}
+      />
+    );
+  }
+  return (
+    <div
+      className="exercise-media"
+      style={gifUrl ? { backgroundImage: `url(${gifUrl})` } : undefined}
+    >
+      {!gifUrl && "No image yet"}
+    </div>
+  );
+}
+
 export function ExerciseDetail() {
   const { circuitId, exerciseId } = useParams();
   const { categories, loading, setCategories } = useInventory();
@@ -90,12 +120,7 @@ export function ExerciseDetail() {
       </Link>
 
       <div style={{ padding: "16px 24px 0" }}>
-        <div
-          className="exercise-media"
-          style={exercise.mediaUrl ? { backgroundImage: `url(${exercise.mediaUrl})` } : undefined}
-        >
-          {!exercise.mediaUrl && "No image yet"}
-        </div>
+        <ExerciseMedia videoUrl={exercise.videoUrl} gifUrl={exercise.mediaUrl} />
       </div>
 
       <div className="cues">

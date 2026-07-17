@@ -60,6 +60,10 @@ export function useInventory() {
           dbId: e.id,
           name: e.name,
           mediaUrl: e.media_path ? mediaBaseUrl + e.media_path : undefined,
+          videoUrl:
+            e.media_path && /\.(gif|webp|png|jpe?g)$/i.test(e.media_path)
+              ? mediaBaseUrl + e.media_path.replace(/\.(gif|webp|png|jpe?g)$/i, ".mp4")
+              : undefined,
           cues: e.cues ?? undefined,
           hidden: e.hidden,
           sortOrder: e.sort_order,

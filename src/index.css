@@ -528,10 +528,10 @@ button:not(:disabled):active {
 /* ── Exercise / cues ────────────────────────────────────── */
 .exercise-media {
   width: 100%;
-  max-width: min(420px, 78vw); /* shrink relative to the phone screen too */
+  max-width: min(600px, 90vw); /* ~1.5x larger, still capped on phones */
   margin: 0 auto;
   aspect-ratio: 16 / 10;
-  max-height: 34vh; /* never let the GIF push the cues off-screen */
+  max-height: 50vh; /* stay short enough to keep cues in view */
   background: var(--charcoal-2);
   display: flex;
   align-items: center;
@@ -542,6 +542,11 @@ button:not(:disabled):active {
   background-repeat: no-repeat;
   background-position: center;
   border-radius: 14px;
+}
+
+/* the MP4 re-encode uses the same box; contain matches the GIF framing */
+video.exercise-media {
+  object-fit: contain;
 }
 
 .cues {
