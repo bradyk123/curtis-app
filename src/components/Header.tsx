@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../lib/auth";
 import { useProfile } from "../lib/profile";
+import { usePreviewAthlete, setPreviewAthlete } from "../lib/viewAs";
 import { AuthModal } from "./AuthModal";
 import { ProfileModal } from "./ProfileModal";
 import { Logo } from "./Logo";
@@ -9,10 +10,12 @@ import { Logo } from "./Logo";
 export function Header() {
   const { user, signOut, loading } = useAuth();
   const { profile } = useProfile();
+  const previewing = usePreviewAthlete();
   const [authMode, setAuthMode] = useState<"signin" | "signup" | null>(null);
   const [showProfile, setShowProfile] = useState(false);
 
   const name = profile?.display_name || user?.email || "";
+  const isAdmin = !!profile?.is_admin;
 
   return (
     <header className="header">
@@ -26,7 +29,16 @@ export function Header() {
       <div className="actions">
         {loading ? null : user ? (
           <>
-            {profile?.is_admin && (
+            {isAdmin && (
+              <button
+                className={`viewas-toggle${previewing ? " on" : ""}`}
+                onClick={() => setPreviewAthlete(!previewing)}
+                title={previewing ? "Return to coach view" : "Preview the app as an athlete sees it"}
+              >
+                {previewing ? "Exit athlete view" : "View as athlete"}
+              </button>
+            )}
+            {isAdmin && !previewing && (
               <Link className="admin-link" to="/admin">
                 Approvals
               </Link>

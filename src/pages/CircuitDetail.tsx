@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useInventory } from "../data/useInventory";
 import { useProfile } from "../lib/profile";
+import { usePreviewAthlete } from "../lib/viewAs";
 import { updateInvRow, persistOrder, uploadExerciseMedia } from "../data/inventoryAdmin";
 import { SortableList } from "../components/SortableList";
 import type { Exercise } from "../types";
@@ -10,8 +11,10 @@ export function CircuitDetail() {
   const { circuitId } = useParams();
   const { categories, loading, reload, setCategories } = useInventory();
   const { profile } = useProfile();
-  const isAdmin = !!profile?.is_admin;
-  const [edit, setEdit] = useState(false);
+  const previewing = usePreviewAthlete();
+  const isAdmin = !!profile?.is_admin && !previewing;
+  const [editState, setEdit] = useState(false);
+  const edit = editState && isAdmin; // athlete-preview forces edit mode off
   const [msg, setMsg] = useState<string | null>(null);
   const [uploadingId, setUploadingId] = useState<number | null>(null);
   const fileInput = useRef<HTMLInputElement>(null);

@@ -3,6 +3,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { useVideos, type VideoClip } from "../data/useVideos";
 import { videoLibrary as staticVideos } from "../data/videoLibrary";
 import { useProfile } from "../lib/profile";
+import { usePreviewAthlete } from "../lib/viewAs";
 import { useFlag } from "../data/useFlag";
 import { SortableList, type DragProps } from "../components/SortableList";
 import { ClipVideo, clock } from "../components/ClipVideo";
@@ -242,10 +243,12 @@ function EditableClipCard({ clip, h, drag }: { clip: VideoClip; h: EditHandlers;
 export function VideoLibrary() {
   const { videos, loading, setVideos } = useVideos();
   const { profile } = useProfile();
-  const isAdmin = !!profile?.is_admin;
+  const previewing = usePreviewAthlete();
+  const isAdmin = !!profile?.is_admin && !previewing;
   const { enabled: videoOn, loading: flagLoading, setEnabled: setVideoOn } = useFlag("video_library");
 
-  const [edit, setEdit] = useState(false);
+  const [editState, setEdit] = useState(false);
+  const edit = editState && isAdmin; // athlete-preview forces edit mode off
   const [msg, setMsg] = useState<string | null>(null);
   const [uploadingCat, setUploadingCat] = useState<string | null>(null);
   const [query, setQuery] = useState("");

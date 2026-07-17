@@ -66,9 +66,11 @@ button:not(:disabled) {
   cursor: pointer;
 }
 
-/* quick "press" on tap/click for every button */
+/* quick "press" on tap/click for every button — noticeable push-in */
 button:not(:disabled):active {
-  transform: translateY(1px) scale(0.985);
+  transform: translateY(1px) scale(0.95);
+  filter: brightness(0.9);
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.35);
 }
 
 /* clear keyboard focus ring in brand gold */
@@ -82,12 +84,16 @@ button:not(:disabled):active {
 .list-row,
 .pilot-banner {
   -webkit-tap-highlight-color: transparent;
-  transition: background 0.15s ease, border-color 0.15s ease;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.06s ease,
+    box-shadow 0.12s ease;
 }
 
+/* rows physically "press in" when tapped */
 .list-row:active,
 .pilot-banner:active {
   background: var(--charcoal-3);
+  transform: scale(0.985);
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
 .chevron {
@@ -204,6 +210,70 @@ button:not(:disabled):active {
 
 .header .admin-link:hover {
   background: var(--charcoal-2);
+}
+
+/* ── View-as-athlete (coach preview) ────────────────────── */
+.header .viewas-toggle {
+  flex-shrink: 0;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 7px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: transparent;
+}
+
+.header .viewas-toggle:hover {
+  background: var(--charcoal-2);
+  color: var(--text);
+}
+
+.header .viewas-toggle.on {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: #1a1204;
+}
+
+.viewas-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 20px;
+  background: rgba(233, 182, 60, 0.14);
+  border-bottom: 1px solid var(--gold);
+  color: var(--text);
+  font-size: 13px;
+}
+
+.viewas-banner-exit {
+  flex-shrink: 0;
+  border: 1px solid var(--gold);
+  background: transparent;
+  color: var(--gold);
+  border-radius: 8px;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* "Open >" link that lets a coach drill into a circuit while editing Home */
+.row-open {
+  flex-shrink: 0;
+  color: var(--gold);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  white-space: nowrap;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.row-open:hover {
+  background: var(--charcoal-2);
+  border-color: var(--gold);
 }
 
 /* ── Page hero ──────────────────────────────────────────── */

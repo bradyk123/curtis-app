@@ -1,6 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import { useAuth } from "./lib/auth";
 import { useProfile } from "./lib/profile";
+import { usePreviewAthlete, setPreviewAthlete } from "./lib/viewAs";
 import { Header } from "./components/Header";
 import { Home } from "./pages/Home";
 import { CircuitDetail } from "./pages/CircuitDetail";
@@ -15,6 +16,7 @@ import { AdminPanel } from "./pages/AdminPanel";
 export function App() {
   const { user, loading: authLoading, mfaRequired, recovery } = useAuth();
   const { profile, loading: profileLoading } = useProfile();
+  const previewing = usePreviewAthlete();
 
   if (authLoading) return <div className="auth-loading">Beach Track Club…</div>;
 
@@ -37,12 +39,22 @@ export function App() {
   return (
     <>
       <Header />
+      {previewing && (
+        <div className="viewas-banner">
+          <span>
+            👁 Viewing as an <b>athlete</b> — coach tools are hidden.
+          </span>
+          <button className="viewas-banner-exit" onClick={() => setPreviewAthlete(false)}>
+            Exit athlete view
+          </button>
+        </div>
+      )}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/video-library" element={<VideoLibrary />} />
         <Route path="/circuit/:circuitId" element={<CircuitDetail />} />
         <Route path="/circuit/:circuitId/exercise/:exerciseId" element={<ExerciseDetail />} />
-        {profile.is_admin && <Route path="/admin" element={<AdminPanel />} />}
+        {profile.is_admin && !previewing && <Route path="/admin" element={<AdminPanel />} />}
       </Routes>
     </>
   );

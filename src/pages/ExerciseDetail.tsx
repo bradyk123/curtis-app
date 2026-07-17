@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import { useInventory } from "../data/useInventory";
 import { useVideos, type VideoClip } from "../data/useVideos";
 import { useProfile } from "../lib/profile";
+import { usePreviewAthlete } from "../lib/viewAs";
 import { updateVideoFields } from "../data/videoAdmin";
 import { updateInvRow } from "../data/inventoryAdmin";
 import { ClipVideo } from "../components/ClipVideo";
@@ -12,13 +13,16 @@ export function ExerciseDetail() {
   const { categories, loading, setCategories } = useInventory();
   const { videos, setVideos } = useVideos();
   const { profile } = useProfile();
-  const isAdmin = !!profile?.is_admin;
+  const previewing = usePreviewAthlete();
+  const isAdmin = !!profile?.is_admin && !previewing;
 
-  const [edit, setEdit] = useState(false);
+  const [editState, setEdit] = useState(false);
+  const edit = editState && isAdmin; // athlete-preview forces edit mode off
   const [picker, setPicker] = useState(false);
   const [pq, setPq] = useState("");
   const [msg, setMsg] = useState<string | null>(null);
-  const [editingCues, setEditingCues] = useState(false);
+  const [editingCuesState, setEditingCues] = useState(false);
+  const editingCues = editingCuesState && isAdmin; // athlete-preview forces cues editor closed
   const [cuesDraft, setCuesDraft] = useState("");
 
   const circuit = categories.flatMap((c) => c.circuits).find((c) => c.id === circuitId);

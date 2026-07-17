@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useInventory } from "../data/useInventory";
 import { useVideos } from "../data/useVideos";
 import { useProfile } from "../lib/profile";
+import { usePreviewAthlete } from "../lib/viewAs";
 import { useFlag } from "../data/useFlag";
 import { updateInvRow, persistOrder } from "../data/inventoryAdmin";
 import { SortableList } from "../components/SortableList";
@@ -13,11 +14,13 @@ export function Home() {
   const { categories: inventory, loading, reload, setCategories } = useInventory();
   const { videos } = useVideos();
   const { profile } = useProfile();
-  const isAdmin = !!profile?.is_admin;
+  const previewing = usePreviewAthlete();
+  const isAdmin = !!profile?.is_admin && !previewing;
   const { enabled: videoOn } = useFlag("video_library");
   const videosVisible = videoOn || isAdmin;
 
-  const [edit, setEdit] = useState(false);
+  const [editState, setEdit] = useState(false);
+  const edit = editState && isAdmin; // athlete-preview forces edit mode off
   const [msg, setMsg] = useState<string | null>(null);
   const q = edit ? "" : query.trim().toLowerCase();
 
@@ -245,6 +248,13 @@ export function Home() {
                             <button className="text-btn" onClick={() => hideCircuit(circuit)}>
                               {circuit.hidden ? "Show" : "Hide"}
                             </button>
+                            <Link
+                              className="row-open"
+                              to={`/circuit/${circuit.id}`}
+                              title="Open to edit exercises inside"
+                            >
+                              Open&nbsp;&gt;
+                            </Link>
                           </div>
                         </div>
                       )}
