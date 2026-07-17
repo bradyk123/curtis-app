@@ -4,6 +4,7 @@ import { useInventory } from "../data/useInventory";
 import { useVideos } from "../data/useVideos";
 import { useProfile } from "../lib/profile";
 import { usePreviewAthlete } from "../lib/viewAs";
+import { fuzzyScore, FUZZY_MIN, SUGGEST_MIN } from "../lib/fuzzy";
 import { useFlag } from "../data/useFlag";
 import { updateInvRow, persistOrder } from "../data/inventoryAdmin";
 import { SortableList } from "../components/SortableList";
@@ -26,20 +27,55 @@ export function Home() {
 
   const results = useMemo(() => {
     if (!q) return null;
-    const exercises: { ex: any; ci: any; cat: any }[] = [];
-    const circuits: { ci: any; cat: any }[] = [];
+    const exercises: { ex: any; ci: any; cat: any; score: number }[] = [];
+    const circuits: { ci: any; cat: any; score: number }[] = [];
+    // Near-misses (below the display threshold) feed the "Did you mean…" chips.
+    const near: { name: string; score: number }[] = [];
+
+    const consider = (name: string, score: number) => {
+      if (score >= SUGGEST_MIN && score < FUZZY_MIN) near.push({ name, score });
+    };
+
     for (const cat of inventory) {
       for (const ci of cat.circuits) {
-        if (ci.name.toLowerCase().includes(q)) circuits.push({ ci, cat });
+        const cs = fuzzyScore(q, ci.name);
+        if (cs >= FUZZY_MIN) circuits.push({ ci, cat, score: cs });
+        else consider(ci.name, cs);
         for (const ex of ci.exercises) {
-          if (ex.name.toLowerCase().includes(q)) exercises.push({ ex, ci, cat });
+          const es = fuzzyScore(q, ex.name);
+          if (es >= FUZZY_MIN) exercises.push({ ex, ci, cat, score: es });
+          else consider(ex.name, es);
         }
       }
     }
-    const clips = videosVisible
-      ? videos.filter((v) => !v.hidden && v.name.toLowerCase().includes(q))
-      : [];
-    return { exercises, circuits, clips };
+
+    const clips = (videosVisible ? videos.filter((v) => !v.hidden) : [])
+      .map((v) => ({ v, score: fuzzyScore(q, v.name) }))
+      .filter((x) => {
+        if (x.score >= FUZZY_MIN) return true;
+        consider(x.v.name, x.score);
+        return false;
+      })
+      .sort((a, b) => b.score - a.score)
+      .map((x) => x.v);
+
+    exercises.sort((a, b) => b.score - a.score);
+    circuits.sort((a, b) => b.score - a.score);
+
+    // Top few distinct near-miss names — only surfaced when results are thin.
+    const seen = new Set<string>();
+    const suggestions = near
+      .sort((a, b) => b.score - a.score)
+      .filter((s) => {
+        const key = s.name.toLowerCase();
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      })
+      .slice(0, 3)
+      .map((s) => s.name);
+
+    return { exercises, circuits, clips, suggestions };
   }, [q, inventory, videos, videosVisible]);
 
   const total = results
@@ -179,9 +215,23 @@ export function Home() {
             </section>
           )}
 
-          {total === 0 && (
-            <div className="empty-state">No matches for “{query.trim()}”. Try another word.</div>
-          )}
+          {total === 0 &&
+            (results.suggestions.length > 0 ? (
+              <div className="empty-state suggest-block">
+                <p>
+                  No exact match for “{query.trim()}”. Did you mean:
+                </p>
+                <div className="suggest-chips">
+                  {results.suggestions.map((s) => (
+                    <button key={s} className="suggest-chip" onClick={() => setQuery(s)}>
+                      {s}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div className="empty-state">No matches for “{query.trim()}”. Try another word.</div>
+            ))}
         </div>
       ) : (
         <>
