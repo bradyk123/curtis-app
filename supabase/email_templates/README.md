@@ -22,6 +22,21 @@ Set in **Authentication → SMTP Settings**:
 - Sender email: `team@beachtrackclub.com` (real, replyable mailbox → better deliverability)
 - Sender name: `Beach Track Club`
 
+## Logo
+The header logo is a hosted PNG (email clients strip inline SVG). Regenerate +
+re-upload it with `node scripts/gen_logo.mjs` (rasterizes `public/favicon.svg`).
+It writes `public/btc-logo.png` and uploads to
+`exercise-media/brand/btc-logo.png` (the URL the templates reference).
+
+## Sender avatar (the circle icon in Gmail)
+This is NOT controlled by the email HTML. Gmail shows the avatar from the
+sender's Google account. Since we send as `team@beachtrackclub.com`:
+- **Set a profile photo on the `team@beachtrackclub.com` Google Workspace
+  account** using `public/btc-logo.png` (Google Account → Personal info →
+  Profile photo). Gmail will then show the logo next to the sender name.
+- The paid alternative (BIMI + a Verified Mark Certificate, ~$1k+/yr) is not
+  worth it at this stage.
+
 ## Deliverability notes
 - SPF / DKIM / DMARC are configured (Resend via `send.beachtrackclub.com` +
   `resend._domainkey`; DMARC `p=none` on `_dmarc`). Authentication passes.
