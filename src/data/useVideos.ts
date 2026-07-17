@@ -15,10 +15,12 @@ export interface VideoClip {
   trimEnd?: number | null;
   sortOrder?: number;
   hidden?: boolean;
+  /** Attached training-inventory exercise (Phase 3); null = library-only. */
+  exerciseId?: number | null;
 }
 
 const COLS =
-  "id, slug, name, category, storage_path, duration_label, trim_start, trim_end, sort_order, hidden";
+  "id, slug, name, category, storage_path, duration_label, trim_start, trim_end, sort_order, hidden, exercise_id";
 
 /** The bundled static clips, shaped as VideoClip — used before Supabase loads or if it fails. */
 const staticClips: VideoClip[] = staticVideos.map((c) => ({
@@ -75,6 +77,7 @@ export function useVideos() {
         trimEnd: v.trim_end,
         sortOrder: v.sort_order,
         hidden: v.hidden,
+        exerciseId: v.exercise_id,
       }))
     );
     setLoading(false);

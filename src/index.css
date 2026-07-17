@@ -1121,6 +1121,103 @@ button:not(:disabled):active {
   height: 32px;
 }
 
+/* ── Exercise → attached coaching videos (Phase 3) ──────── */
+.ex-videos {
+  padding: 8px 24px 0;
+}
+
+.ex-videos-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.ex-videos-head h3 {
+  margin: 0;
+  font-size: 18px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.ex-videos-empty {
+  margin: 0 0 12px;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.clip-name-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.attach-btn {
+  margin-top: 14px;
+  width: 100%;
+  border: 1px dashed var(--gold);
+  background: transparent;
+  color: var(--gold);
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: var(--font-body);
+}
+
+.attach-btn:hover {
+  background: var(--charcoal-2);
+}
+
+/* attach picker modal */
+.picker-card {
+  max-width: 440px;
+  display: flex;
+  flex-direction: column;
+  max-height: 80vh;
+}
+
+.picker-list {
+  margin-top: 14px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.picker-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  text-align: left;
+  padding: 10px 8px;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+.picker-row:hover {
+  background: var(--charcoal-2);
+}
+
+.picker-row .label {
+  flex: 1;
+  font-weight: 500;
+}
+
+.picker-row .chevron {
+  color: var(--gold);
+  font-size: 18px;
+  font-weight: 700;
+}
+
 .row-hidden {
   opacity: 0.5;
 }
