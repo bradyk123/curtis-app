@@ -528,10 +528,10 @@ button:not(:disabled):active {
 /* ── Exercise / cues ────────────────────────────────────── */
 .exercise-media {
   width: 100%;
-  max-width: min(600px, 90vw); /* ~1.5x larger, still capped on phones */
+  max-width: min(900px, 94vw); /* ~1.5x larger again for viewing quality */
   margin: 0 auto;
   aspect-ratio: 16 / 10;
-  max-height: 50vh; /* stay short enough to keep cues in view */
+  max-height: 68vh; /* still leaves the cues panel reachable */
   background: var(--charcoal-2);
   display: flex;
   align-items: center;
