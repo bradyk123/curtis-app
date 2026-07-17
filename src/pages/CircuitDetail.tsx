@@ -3,11 +3,12 @@ import { Link, useParams } from "react-router-dom";
 import { useInventory } from "../data/useInventory";
 import { useProfile } from "../lib/profile";
 import { updateInvRow, persistOrder, uploadExerciseMedia } from "../data/inventoryAdmin";
+import { SortableList } from "../components/SortableList";
 import type { Exercise } from "../types";
 
 export function CircuitDetail() {
   const { circuitId } = useParams();
-  const { categories, loading, reload } = useInventory();
+  const { categories, loading, reload, setCategories } = useInventory();
   const { profile } = useProfile();
   const isAdmin = !!profile?.is_admin;
   const [edit, setEdit] = useState(false);
@@ -31,13 +32,14 @@ export function CircuitDetail() {
     fail((await updateInvRow("exercises", ex.dbId!, { hidden: !ex.hidden })).error);
     reload();
   };
-  const move = async (index: number, dir: -1 | 1) => {
-    const j = index + dir;
-    if (j < 0 || j >= exercises.length) return;
-    const ids = exercises.map((e) => e.dbId!);
-    [ids[index], ids[j]] = [ids[j], ids[index]];
-    fail((await persistOrder("exercises", ids)).error);
-    reload();
+  const reorderExercises = (reordered: Exercise[]) => {
+    setCategories((cs) =>
+      cs.map((c) => ({
+        ...c,
+        circuits: c.circuits.map((ci) => (ci.dbId === circuit!.dbId ? { ...ci, exercises: reordered } : ci)),
+      }))
+    );
+    persistOrder("exercises", reordered.map((e) => e.dbId!)).then((r) => fail(r.error));
   };
 
   const pickMedia = (ex: Exercise) => {
@@ -86,41 +88,54 @@ export function CircuitDetail() {
           <div className="empty-state">No exercises here yet.</div>
         ) : (
           <div className="list">
-            {exercises.map((exercise, i) =>
-              edit ? (
-                <div
-                  className={`list-row editing-row${exercise.hidden ? " row-hidden" : ""}`}
-                  key={exercise.id}
-                >
-                  <button
-                    className="thumb thumb-edit"
-                    style={exercise.mediaUrl ? { backgroundImage: `url(${exercise.mediaUrl})` } : undefined}
-                    onClick={() => pickMedia(exercise)}
-                    title="Change GIF"
-                    disabled={uploadingId === exercise.dbId}
+            {edit ? (
+              <SortableList
+                items={exercises}
+                getId={(e) => e.dbId!}
+                onReorder={reorderExercises}
+                renderItem={(exercise, drag) => (
+                  <div
+                    className={`list-row editing-row${exercise.hidden ? " row-hidden" : ""}`}
+                    ref={drag.rowProps.ref}
+                    style={drag.rowProps.style}
                   >
-                    <span className="thumb-overlay">{uploadingId === exercise.dbId ? "…" : "✎"}</span>
-                  </button>
-                  <input
-                    className="edit-row-input"
-                    defaultValue={exercise.name}
-                    onBlur={(e) => {
-                      const v = e.target.value.trim();
-                      if (v && v !== exercise.name) rename(exercise, v);
-                    }}
-                  />
-                  <div className="row-actions">
-                    <button className="icon-btn" disabled={i === 0} onClick={() => move(i, -1)}>↑</button>
-                    <button className="icon-btn" disabled={i === exercises.length - 1} onClick={() => move(i, 1)}>↓</button>
-                    <button className="text-btn" disabled={uploadingId === exercise.dbId} onClick={() => pickMedia(exercise)}>
-                      {uploadingId === exercise.dbId ? "Uploading…" : "GIF"}
+                    <button className="drag-handle" title="Drag to reorder" {...drag.handleProps}>
+                      ⠿
                     </button>
-                    <button className="text-btn" onClick={() => hide(exercise)}>
-                      {exercise.hidden ? "Show" : "Hide"}
+                    <button
+                      className="thumb thumb-edit"
+                      style={exercise.mediaUrl ? { backgroundImage: `url(${exercise.mediaUrl})` } : undefined}
+                      onClick={() => pickMedia(exercise)}
+                      title="Change GIF"
+                      disabled={uploadingId === exercise.dbId}
+                    >
+                      <span className="thumb-overlay">{uploadingId === exercise.dbId ? "…" : "✎"}</span>
                     </button>
+                    <input
+                      className="edit-row-input"
+                      defaultValue={exercise.name}
+                      onBlur={(e) => {
+                        const v = e.target.value.trim();
+                        if (v && v !== exercise.name) rename(exercise, v);
+                      }}
+                    />
+                    <div className="row-actions">
+                      <button
+                        className="text-btn"
+                        disabled={uploadingId === exercise.dbId}
+                        onClick={() => pickMedia(exercise)}
+                      >
+                        {uploadingId === exercise.dbId ? "Uploading…" : "GIF"}
+                      </button>
+                      <button className="text-btn" onClick={() => hide(exercise)}>
+                        {exercise.hidden ? "Show" : "Hide"}
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ) : (
+                )}
+              />
+            ) : (
+              exercises.map((exercise) => (
                 <Link
                   className="list-row"
                   to={`/circuit/${circuit.id}/exercise/${exercise.id}`}
@@ -133,7 +148,7 @@ export function CircuitDetail() {
                   <span className="label">{exercise.name}</span>
                   <span className="chevron">&gt;</span>
                 </Link>
-              )
+              ))
             )}
           </div>
         )}

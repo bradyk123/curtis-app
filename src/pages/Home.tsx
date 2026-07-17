@@ -5,11 +5,12 @@ import { useVideos } from "../data/useVideos";
 import { useProfile } from "../lib/profile";
 import { useFlag } from "../data/useFlag";
 import { updateInvRow, persistOrder } from "../data/inventoryAdmin";
+import { SortableList } from "../components/SortableList";
 import type { Category, Circuit } from "../types";
 
 export function Home() {
   const [query, setQuery] = useState("");
-  const { categories: inventory, loading, reload } = useInventory();
+  const { categories: inventory, loading, reload, setCategories } = useInventory();
   const { videos } = useVideos();
   const { profile } = useProfile();
   const isAdmin = !!profile?.is_admin;
@@ -55,13 +56,9 @@ export function Home() {
     fail((await updateInvRow("categories", c.dbId!, { hidden: !c.hidden })).error);
     reload();
   };
-  const moveCat = async (index: number, dir: -1 | 1) => {
-    const j = index + dir;
-    if (j < 0 || j >= cats.length) return;
-    const ids = cats.map((c) => c.dbId!);
-    [ids[index], ids[j]] = [ids[j], ids[index]];
-    fail((await persistOrder("categories", ids)).error);
-    reload();
+  const reorderCats = (reordered: Category[]) => {
+    setCategories(reordered); // optimistic
+    persistOrder("categories", reordered.map((c) => c.dbId!)).then((r) => fail(r.error));
   };
 
   const renameCircuit = async (c: Circuit, name: string) =>
@@ -70,14 +67,9 @@ export function Home() {
     fail((await updateInvRow("circuits", c.dbId!, { hidden: !c.hidden })).error);
     reload();
   };
-  const moveCircuit = async (cat: Category, index: number, dir: -1 | 1) => {
-    const list = circuitsOf(cat);
-    const j = index + dir;
-    if (j < 0 || j >= list.length) return;
-    const ids = list.map((c) => c.dbId!);
-    [ids[index], ids[j]] = [ids[j], ids[index]];
-    fail((await persistOrder("circuits", ids)).error);
-    reload();
+  const reorderCircuits = (cat: Category, reordered: Circuit[]) => {
+    setCategories((cs) => cs.map((c) => (c.dbId === cat.dbId ? { ...c, circuits: reordered } : c)));
+    persistOrder("circuits", reordered.map((c) => c.dbId!)).then((r) => fail(r.error));
   };
 
   return (
@@ -202,12 +194,17 @@ export function Home() {
 
           {loading && inventory.length === 0 && <div className="empty-state">Loading…</div>}
 
-          {cats.map((category, ci) => {
-            const circuits = circuitsOf(category);
-            return (
-              <section className="category-section" key={category.id}>
-                {edit ? (
+          {edit ? (
+            <SortableList
+              items={cats}
+              getId={(c) => c.dbId!}
+              onReorder={reorderCats}
+              renderItem={(category, drag) => (
+                <section className="category-section" ref={drag.rowProps.ref} style={drag.rowProps.style}>
                   <div className={`edit-head${category.hidden ? " row-hidden" : ""}`}>
+                    <button className="drag-handle" title="Drag to reorder" {...drag.handleProps}>
+                      ⠿
+                    </button>
                     <input
                       className="edit-title-input"
                       defaultValue={category.name}
@@ -217,47 +214,60 @@ export function Home() {
                       }}
                     />
                     <div className="row-actions">
-                      <button className="icon-btn" disabled={ci === 0} onClick={() => moveCat(ci, -1)}>↑</button>
-                      <button className="icon-btn" disabled={ci === cats.length - 1} onClick={() => moveCat(ci, 1)}>↓</button>
                       <button className="text-btn" onClick={() => hideCat(category)}>
                         {category.hidden ? "Show" : "Hide"}
                       </button>
                     </div>
                   </div>
-                ) : (
-                  <h3>{category.name}</h3>
-                )}
-                <div className="list">
-                  {circuits.map((circuit, i) =>
-                    edit ? (
-                      <div className={`list-row editing-row${circuit.hidden ? " row-hidden" : ""}`} key={circuit.id}>
-                        <input
-                          className="edit-row-input"
-                          defaultValue={circuit.name}
-                          onBlur={(e) => {
-                            const v = e.target.value.trim();
-                            if (v && v !== circuit.name) renameCircuit(circuit, v);
-                          }}
-                        />
-                        <div className="row-actions">
-                          <button className="icon-btn" disabled={i === 0} onClick={() => moveCircuit(category, i, -1)}>↑</button>
-                          <button className="icon-btn" disabled={i === circuits.length - 1} onClick={() => moveCircuit(category, i, 1)}>↓</button>
-                          <button className="text-btn" onClick={() => hideCircuit(circuit)}>
-                            {circuit.hidden ? "Show" : "Hide"}
+                  <div className="list">
+                    <SortableList
+                      items={circuitsOf(category)}
+                      getId={(c) => c.dbId!}
+                      onReorder={(r) => reorderCircuits(category, r)}
+                      renderItem={(circuit, cdrag) => (
+                        <div
+                          className={`list-row editing-row${circuit.hidden ? " row-hidden" : ""}`}
+                          ref={cdrag.rowProps.ref}
+                          style={cdrag.rowProps.style}
+                        >
+                          <button className="drag-handle" title="Drag to reorder" {...cdrag.handleProps}>
+                            ⠿
                           </button>
+                          <input
+                            className="edit-row-input"
+                            defaultValue={circuit.name}
+                            onBlur={(e) => {
+                              const v = e.target.value.trim();
+                              if (v && v !== circuit.name) renameCircuit(circuit, v);
+                            }}
+                          />
+                          <div className="row-actions">
+                            <button className="text-btn" onClick={() => hideCircuit(circuit)}>
+                              {circuit.hidden ? "Show" : "Hide"}
+                            </button>
+                          </div>
                         </div>
-                      </div>
-                    ) : (
-                      <Link className="list-row" to={`/circuit/${circuit.id}`} key={circuit.id}>
-                        <span className="label">{circuit.name}</span>
-                        <span className="chevron">&gt;</span>
-                      </Link>
-                    )
-                  )}
+                      )}
+                    />
+                  </div>
+                </section>
+              )}
+            />
+          ) : (
+            cats.map((category) => (
+              <section className="category-section" key={category.id}>
+                <h3>{category.name}</h3>
+                <div className="list">
+                  {circuitsOf(category).map((circuit) => (
+                    <Link className="list-row" to={`/circuit/${circuit.id}`} key={circuit.id}>
+                      <span className="label">{circuit.name}</span>
+                      <span className="chevron">&gt;</span>
+                    </Link>
+                  ))}
                 </div>
               </section>
-            );
-          })}
+            ))
+          )}
         </>
       )}
 

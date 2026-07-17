@@ -76,5 +76,5 @@ export function useInventory() {
     load();
   }, [load]);
 
-  return { categories, loading, error, reload: load };
+  return { categories, loading, error, reload: load, setCategories };
 }

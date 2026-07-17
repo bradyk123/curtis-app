@@ -4,6 +4,7 @@ import { useVideos, type VideoClip } from "../data/useVideos";
 import { videoLibrary as staticVideos } from "../data/videoLibrary";
 import { useProfile } from "../lib/profile";
 import { useFlag } from "../data/useFlag";
+import { SortableList, type DragProps } from "../components/SortableList";
 import {
   slugify,
   uniqueSlug,
@@ -222,24 +223,25 @@ function TrimEditor({
 }
 
 interface EditHandlers {
-  canMoveUp: boolean;
-  canMoveDown: boolean;
   onRename: (name: string) => void;
   onCategory: (category: string) => void;
   onDuration: (label: string) => void;
   onToggleHidden: () => void;
   onDelete: () => void;
-  onMove: (dir: -1 | 1) => void;
   onTrim: (start: number | null, end: number | null) => void;
 }
 
 /** Editable card (admins in edit mode). Fields save on blur. */
-function EditableClipCard({ clip, h }: { clip: VideoClip; h: EditHandlers }) {
+function EditableClipCard({ clip, h, drag }: { clip: VideoClip; h: EditHandlers; drag: DragProps }) {
   const [trimming, setTrimming] = useState(false);
   const isTrimmed = clip.trimStart != null || clip.trimEnd != null;
 
   return (
-    <div className={`clip-card editing${clip.hidden ? " hidden-clip" : ""}`}>
+    <div
+      className={`clip-card editing${clip.hidden ? " hidden-clip" : ""}`}
+      ref={drag.rowProps.ref}
+      style={drag.rowProps.style}
+    >
       {trimming ? (
         <TrimEditor
           clip={clip}
@@ -294,11 +296,8 @@ function EditableClipCard({ clip, h }: { clip: VideoClip; h: EditHandlers }) {
           />
         </label>
         <div className="clip-edit-actions">
-          <button className="icon-btn" disabled={!h.canMoveUp} onClick={() => h.onMove(-1)} title="Move up">
-            ↑
-          </button>
-          <button className="icon-btn" disabled={!h.canMoveDown} onClick={() => h.onMove(1)} title="Move down">
-            ↓
+          <button className="drag-handle" title="Drag to reorder" {...drag.handleProps}>
+            ⠿
           </button>
           <button className={`text-btn${isTrimmed ? " active" : ""}`} onClick={() => setTrimming((t) => !t)}>
             {trimming ? "Close" : isTrimmed ? "Trim ✓" : "Trim"}
@@ -399,19 +398,13 @@ export function VideoLibrary() {
     fail((await deleteVideoRow(clip.id!)).error);
   };
 
-  const move = async (cat: string, index: number, dir: -1 | 1) => {
-    const clips = clipsFor(cat);
-    const j = index + dir;
-    if (j < 0 || j >= clips.length) return;
-    const a = clips[index];
-    const b = clips[j];
-    const aOrder = a.sortOrder ?? index;
-    const bOrder = b.sortOrder ?? j;
-    patchLocal(a.id!, { sortOrder: bOrder });
-    patchLocal(b.id!, { sortOrder: aOrder });
-    const r1 = await updateVideoFields(a.id!, { sort_order: bOrder });
-    const r2 = await updateVideoFields(b.id!, { sort_order: aOrder });
-    fail(r1.error || r2.error);
+  const reorderClips = (reordered: VideoClip[]) => {
+    // optimistic: assign new sort_order by position, then persist each
+    const orderMap = new Map(reordered.map((c, i) => [c.id, i]));
+    setVideos((vs) => vs.map((v) => (orderMap.has(v.id) ? { ...v, sortOrder: orderMap.get(v.id) } : v)));
+    reordered.forEach((c, i) => {
+      updateVideoFields(c.id!, { sort_order: i }).then((r) => fail(r.error));
+    });
   };
 
   const pickUpload = (cat: string) => {
@@ -536,31 +529,36 @@ export function VideoLibrary() {
               )}
             </h3>
             <div className="clip-grid">
-              {clips.map((c, i) =>
-                edit ? (
-                  <EditableClipCard
-                    key={c.id ?? c.videoUrl}
-                    clip={c}
-                    h={{
-                      canMoveUp: i > 0,
-                      canMoveDown: i < clips.length - 1,
-                      onRename: (name) => rename(c, name),
-                      onCategory: (category) => recategorize(c, category),
-                      onDuration: (label) => setDuration(c, label),
-                      onToggleHidden: () => toggleHidden(c),
-                      onDelete: () => remove(c),
-                      onMove: (dir) => move(cat, i, dir),
-                      onTrim: (s, e) => setTrim(c, s, e),
-                    }}
-                  />
-                ) : (
+              {edit ? (
+                <SortableList
+                  items={clips}
+                  getId={(c) => c.id!}
+                  onReorder={reorderClips}
+                  grid
+                  renderItem={(c, drag) => (
+                    <EditableClipCard
+                      clip={c}
+                      drag={drag}
+                      h={{
+                        onRename: (name) => rename(c, name),
+                        onCategory: (category) => recategorize(c, category),
+                        onDuration: (label) => setDuration(c, label),
+                        onToggleHidden: () => toggleHidden(c),
+                        onDelete: () => remove(c),
+                        onTrim: (s, e) => setTrim(c, s, e),
+                      }}
+                    />
+                  )}
+                />
+              ) : (
+                clips.map((c) => (
                   <ClipCard
                     key={c.id ?? c.videoUrl}
                     clip={c}
                     anchorId={c.slug ? `clip-${c.slug}` : undefined}
                     flash={!!c.slug && c.slug === flashId}
                   />
-                )
+                ))
               )}
             </div>
           </section>
